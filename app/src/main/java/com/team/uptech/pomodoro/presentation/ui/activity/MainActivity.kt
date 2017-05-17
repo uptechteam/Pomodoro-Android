@@ -1,6 +1,12 @@
 package com.team.uptech.pomodoro.presentation.ui.activity
 
+import android.app.NotificationManager
+import android.app.PendingIntent
+import android.content.Context
+import android.content.Intent
+import android.graphics.BitmapFactory
 import android.os.Bundle
+import android.support.v4.app.NotificationCompat
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -8,9 +14,13 @@ import android.widget.Toast
 import com.team.uptech.pomodoro.R
 import com.team.uptech.pomodoro.presentation.presenter.MainPresenter
 import com.team.uptech.pomodoro.presentation.ui.PomodoroView
+import io.reactivex.Observable
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.activity_main.*
 import org.jetbrains.anko.startActivity
 import org.jetbrains.anko.textResource
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 
@@ -19,6 +29,9 @@ import javax.inject.Inject
  */
 class MainActivity : BaseActivity(), PomodoroView {
     @Inject lateinit var presenter: MainPresenter
+
+    private var notificationManager: NotificationManager? = null
+    private var tickDisposable: Disposable? = null
 
     override fun getContentView() = R.layout.activity_main
 
@@ -49,20 +62,58 @@ class MainActivity : BaseActivity(), PomodoroView {
     }
 
     override fun showTimer() {
+        val builder = generateNotificationBuilder()
+
         textView.textResource = R.string.work
-        progress_bar.visibility = View.VISIBLE
         button_start_stop.textResource = R.string.stop_timer
+
+        timer_with_progress.visibility = View.GONE
+        timer_with_progress.visibility = View.VISIBLE
+        timer_with_progress.progress = timer_with_progress.maxProgress / 10
+        tickDisposable = tick()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({ response ->
+                    builder.setProgress(10, response, false)
+                    notificationManager?.notify(0, builder.build())
+                    timer_with_progress.progress = timer_with_progress.maxProgress / 10 * (response.toFloat()+1)
+                }, { error ->
+                    showError(error.toString())
+                }, { presenter.onStartStopClicked() })
+
+    }
+
+    private fun generateNotificationBuilder(): NotificationCompat.Builder {
+        val builder = NotificationCompat.Builder(applicationContext)
+                .setSmallIcon(R.drawable.angry_pomodoro)
+                .setProgress(10, 0, false)
+                .setLargeIcon(BitmapFactory.decodeResource(resources, R.drawable.angry_pomodoro))
+                .setContentTitle("Work! Work! Work")
+                .setContentText("You are working now!!!")
+
+        val resultIntent = Intent(applicationContext, MainActivity::class.java)
+        val pendingIntent = PendingIntent.getActivity(applicationContext, System.currentTimeMillis().toInt(), resultIntent, 0)
+
+        builder.setContentIntent(pendingIntent)
+        notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager?.notify(0, builder.build())
+        return builder
     }
 
     override fun hideTimer() {
+        timer_with_progress.progress = 0f
+        timer_with_progress.visibility = View.GONE
+        tickDisposable?.dispose()
+        notificationManager?.cancel(0)
+
         textView.textResource = R.string.not_work
-        progress_bar.visibility = View.GONE
         button_start_stop.textResource = R.string.start_timer
     }
 
     override fun showMessage(message: String) = Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
 
     private fun openSettingsActivity() = startActivity<SettingsActivity>()
+
+    private fun tick() = Observable.interval(1, TimeUnit.SECONDS).take(10).map { it.toInt() + 1 }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu_main, menu)

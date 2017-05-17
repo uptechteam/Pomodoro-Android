@@ -84,4 +84,6 @@ dependencies {
     compile 'com.google.dagger:dagger:2.8'
     kapt 'com.google.dagger:dagger-compiler:2.8'
     provided 'org.glassfish:javax.annotation:10.0-b28'
+
+    compile 'com.github.rahatarmanahmed:circularprogressview:2.5.0'
 }
