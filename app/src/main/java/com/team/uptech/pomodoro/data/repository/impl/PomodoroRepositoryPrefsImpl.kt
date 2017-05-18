@@ -7,7 +7,7 @@ import com.team.uptech.pomodoro.data.model.PomodoroData
 import com.team.uptech.pomodoro.data.model.PomodoroTypeData
 import com.team.uptech.pomodoro.data.repository.PomodoroRepository
 import io.reactivex.Completable
-import io.reactivex.Observable
+import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
@@ -21,17 +21,16 @@ class PomodoroRepositoryPrefsImpl @Inject constructor(context: Context) : Pomodo
     private val IS_RUNNING = "IS_RUNNING"
     private val TYPE = "TYPE"
 
-    override fun getPomodoro(): Observable<PomodoroData> {
+    override fun getPomodoro(): Single<PomodoroData> {
         try {
             Thread.sleep(500)
         } catch (e: InterruptedException) {
             e.printStackTrace()
         }
 
-        return Observable.create<PomodoroData> { subcriber ->
+        return Single.create<PomodoroData> { subcriber ->
             val pomodoro = PomodoroData(getPomodoroIsRunning(), getPomodoroType())
-            subcriber.onNext(pomodoro)
-            subcriber.onComplete()
+            subcriber.onSuccess(pomodoro)
         }.subscribeOn(Schedulers.io())
     }
 

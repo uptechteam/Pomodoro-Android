@@ -32,7 +32,7 @@ class MainPresenterImpl @Inject constructor(val startTimerUseCase: StartTimerUse
                     if (it.isRunning) {
                         pomodoroView?.hideTimer()
                     } else {
-                        pomodoroView?.showTimer()
+                        pomodoroView?.showTimer(it)
                     }
                 }, { pomodoroView?.showError(it.toString()) })
     }

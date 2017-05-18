@@ -12,6 +12,7 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import com.team.uptech.pomodoro.R
+import com.team.uptech.pomodoro.presentation.model.Pomodoro
 import com.team.uptech.pomodoro.presentation.presenter.MainPresenter
 import com.team.uptech.pomodoro.presentation.ui.PomodoroView
 import io.reactivex.Observable
@@ -32,6 +33,8 @@ class MainActivity : BaseActivity(), PomodoroView {
 
     private var notificationManager: NotificationManager? = null
     private var tickDisposable: Disposable? = null
+    private val NOTIFICATION_ID = 0
+    private var currentPomodoro: Pomodoro? = null
 
     override fun getContentView() = R.layout.activity_main
 
@@ -61,31 +64,38 @@ class MainActivity : BaseActivity(), PomodoroView {
         super.onDestroy()
     }
 
-    override fun showTimer() {
-        val builder = generateNotificationBuilder()
+    override fun showTimer(pomodoro: Pomodoro) {
+        currentPomodoro = pomodoro
+        currentPomodoro?.let {
+            val maxValue = it.type.time
 
-        textView.textResource = R.string.work
-        button_start_stop.textResource = R.string.stop_timer
+            val builder = generateNotificationBuilder(maxValue)
 
-        timer_with_progress.visibility = View.GONE
-        timer_with_progress.visibility = View.VISIBLE
-        timer_with_progress.progress = timer_with_progress.maxProgress / 10
-        tickDisposable = tick()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({ response ->
-                    builder.setProgress(10, response, false)
-                    notificationManager?.notify(0, builder.build())
-                    timer_with_progress.progress = timer_with_progress.maxProgress / 10 * (response.toFloat()+1)
-                }, { error ->
-                    showError(error.toString())
-                }, { presenter.onStartStopClicked() })
+            textView.textResource = R.string.work
+            button_start_stop.textResource = R.string.stop_timer
+
+            timer_with_progress.visibility = View.GONE
+            timer_with_progress.visibility = View.VISIBLE
+            timer_with_progress.progress = timer_with_progress.maxProgress / maxValue
+            tickDisposable = tick()
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe({ response ->
+                        builder.setProgress(maxValue, response, false)
+                        notificationManager?.notify(NOTIFICATION_ID, builder.build())
+                        timer_with_progress.progress = timer_with_progress.maxProgress / maxValue * (response.toFloat() + 1)
+                    }, { error ->
+                        showError(error.toString())
+                    }, {
+                        presenter.onStartStopClicked()
+                    })
+        }
 
     }
 
-    private fun generateNotificationBuilder(): NotificationCompat.Builder {
+    private fun generateNotificationBuilder(maxValue: Int): NotificationCompat.Builder {
         val builder = NotificationCompat.Builder(applicationContext)
                 .setSmallIcon(R.drawable.angry_pomodoro)
-                .setProgress(10, 0, false)
+                .setProgress(maxValue, 0, false)
                 .setLargeIcon(BitmapFactory.decodeResource(resources, R.drawable.angry_pomodoro))
                 .setContentTitle("Work! Work! Work")
                 .setContentText("You are working now!!!")
@@ -95,7 +105,7 @@ class MainActivity : BaseActivity(), PomodoroView {
 
         builder.setContentIntent(pendingIntent)
         notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        notificationManager?.notify(0, builder.build())
+        notificationManager?.notify(NOTIFICATION_ID, builder.build())
         return builder
     }
 
@@ -103,7 +113,7 @@ class MainActivity : BaseActivity(), PomodoroView {
         timer_with_progress.progress = 0f
         timer_with_progress.visibility = View.GONE
         tickDisposable?.dispose()
-        notificationManager?.cancel(0)
+        notificationManager?.cancel(NOTIFICATION_ID)
 
         textView.textResource = R.string.not_work
         button_start_stop.textResource = R.string.start_timer
@@ -111,9 +121,11 @@ class MainActivity : BaseActivity(), PomodoroView {
 
     override fun showMessage(message: String) = Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
 
-    private fun openSettingsActivity() = startActivity<SettingsActivity>()
+    private fun tick() = Observable.interval(1, TimeUnit.SECONDS)
+            .take(currentPomodoro?.type?.time?.toLong() ?: 0)
+            .map { it.toInt() + 1 } //start from first
 
-    private fun tick() = Observable.interval(1, TimeUnit.SECONDS).take(10).map { it.toInt() + 1 }
+    private fun openSettingsActivity() = startActivity<SettingsActivity>()
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu_main, menu)
