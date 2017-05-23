@@ -32,12 +32,20 @@ class SettingsPresenterImpl @Inject constructor(val changeTimeUseCase: ChangeTim
                 })
     }
 
+    override fun getIsInfinite() {
+        settingsView?.showIsInfinite(changeTimeUseCase.getIsInfinite())
+    }
+
     override fun onChangeWorkTimeClicked(time: Int) {
         changeTimeUseCase.changeWorkTime(time).subscribe()
     }
 
     override fun onChangeRelaxTimeClicked(time: Int) {
         changeTimeUseCase.changeRelaxTime(time).subscribe()
+    }
+
+    override fun onInfinityChanged(isInfinite: Boolean) {
+        changeTimeUseCase.changeInfinity(isInfinite).subscribe()
     }
 
     override fun bind(view: SettingsView) {

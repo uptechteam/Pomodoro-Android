@@ -7,4 +7,5 @@ interface SettingsView : BaseView {
     fun showDialog(messageId: Int, shouldCloseScreen: Boolean)
     fun showWorkTime(workTime: Int)
     fun showRelaxTime(relaxTime: Int)
+    fun showIsInfinite(isInfinite: Boolean)
 }

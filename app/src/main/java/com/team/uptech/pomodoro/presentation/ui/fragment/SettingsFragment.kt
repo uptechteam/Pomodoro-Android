@@ -2,6 +2,7 @@ package com.team.uptech.pomodoro.presentation.ui.fragment
 
 import android.os.Bundle
 import android.preference.PreferenceFragment
+import android.preference.SwitchPreference
 import android.support.v7.app.AlertDialog
 import android.view.View
 import android.widget.Toast
@@ -21,6 +22,7 @@ import javax.inject.Inject
 class SettingsFragment : PreferenceFragment(), SettingsView {
 
     private var activityComponent: ActivityComponent? = null
+
     @Inject lateinit var presenter: SettingsPresenter
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -38,6 +40,7 @@ class SettingsFragment : PreferenceFragment(), SettingsView {
         presenter.bind(this)
         presenter.getPomodoroTime(PomodoroType.WORK)
         presenter.getPomodoroTime(PomodoroType.BREAK)
+        presenter.getIsInfinite()
     }
 
     override fun showWorkTime(workTime: Int) {
@@ -54,6 +57,17 @@ class SettingsFragment : PreferenceFragment(), SettingsView {
         relaxTimePreference.summary = relaxTime.toString()
         relaxTimePreference.setOnPreferenceChangeListener { preference, any ->
             showError("Preference Changed")
+            true
+        }
+    }
+
+    override fun showIsInfinite(isInfinite: Boolean) {
+        val infiniteTimer = findPreference("infinite_timer") as SwitchPreference
+        if (infiniteTimer.isChecked != isInfinite) {
+            infiniteTimer.isChecked = isInfinite
+        }
+        infiniteTimer.setOnPreferenceChangeListener { preference, isChecked ->
+            presenter.onInfinityChanged(isChecked as Boolean)
             true
         }
     }
@@ -79,12 +93,7 @@ class SettingsFragment : PreferenceFragment(), SettingsView {
     override fun showError(message: String) = Toast.makeText(activity, message, Toast.LENGTH_SHORT).show()
 
     fun initPreferences() {
-//        val workTimePreference = findPreference("work_time")
-//        workTimePreference.summary =
-//                workTimePreference.setOnPreferenceChangeListener { preference, any ->
-//                    showError("Preference Changed")
-//                    true
-//                }
+
     }
 
     override fun onDestroyView() {
