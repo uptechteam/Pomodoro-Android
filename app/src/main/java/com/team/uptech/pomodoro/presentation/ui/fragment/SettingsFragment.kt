@@ -1,6 +1,7 @@
 package com.team.uptech.pomodoro.presentation.ui.fragment
 
 import android.os.Bundle
+import android.preference.EditTextPreference
 import android.preference.PreferenceFragment
 import android.preference.SwitchPreference
 import android.support.v7.app.AlertDialog
@@ -44,19 +45,23 @@ class SettingsFragment : PreferenceFragment(), SettingsView {
     }
 
     override fun showWorkTime(workTime: Int) {
-        val workTimePreference = findPreference("work_time")
+        val workTimePreference = findPreference("work_time") as EditTextPreference
         workTimePreference.summary = workTime.toString()
-        workTimePreference.setOnPreferenceChangeListener { preference, any ->
-            showError("Preference Changed")
+        workTimePreference.text = workTime.toString()
+        workTimePreference.setOnPreferenceChangeListener { preference, time ->
+            presenter.onWorkTimeChanged(Integer.valueOf(time.toString()))
+            workTimePreference.summary = time.toString()
             true
         }
     }
 
     override fun showRelaxTime(relaxTime: Int) {
-        val relaxTimePreference = findPreference("relax_time")
+        val relaxTimePreference = findPreference("relax_time") as EditTextPreference
         relaxTimePreference.summary = relaxTime.toString()
-        relaxTimePreference.setOnPreferenceChangeListener { preference, any ->
-            showError("Preference Changed")
+        relaxTimePreference.text = relaxTime.toString()
+        relaxTimePreference.setOnPreferenceChangeListener { preference, time ->
+            presenter.onRelaxTimeChanged(Integer.valueOf(time.toString()))
+            relaxTimePreference.summary = time.toString()
             true
         }
     }

@@ -2,6 +2,7 @@ package com.team.uptech.pomodoro.presentation.presenter.impl
 
 import com.team.uptech.pomodoro.PerActivity
 import com.team.uptech.pomodoro.domain.interactor.ChangeTimeUseCase
+import com.team.uptech.pomodoro.domain.model.PomodoroTypeDomain
 import com.team.uptech.pomodoro.presentation.model.PomodoroType
 import com.team.uptech.pomodoro.presentation.presenter.SettingsPresenter
 import com.team.uptech.pomodoro.presentation.ui.SettingsView
@@ -17,7 +18,7 @@ class SettingsPresenterImpl @Inject constructor(val changeTimeUseCase: ChangeTim
     private var settingsView: SettingsView? = null
 
     override fun getPomodoroTime(pomodoroType: PomodoroType) {
-        changeTimeUseCase.getPomodoroTypeTime(pomodoroType)
+        changeTimeUseCase.getPomodoroTypeTime(PomodoroTypeDomain.valueOf(pomodoroType.toString()))
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe { settingsView?.showProgress() }
                 .doAfterTerminate { settingsView?.hideProgress() }
@@ -36,12 +37,12 @@ class SettingsPresenterImpl @Inject constructor(val changeTimeUseCase: ChangeTim
         settingsView?.showIsInfinite(changeTimeUseCase.getIsInfinite())
     }
 
-    override fun onChangeWorkTimeClicked(time: Int) {
-        changeTimeUseCase.changeWorkTime(time).subscribe()
+    override fun onWorkTimeChanged(time: Int) {
+        changeTimeUseCase.changeTypeTime(PomodoroTypeDomain.WORK, time).subscribe()
     }
 
-    override fun onChangeRelaxTimeClicked(time: Int) {
-        changeTimeUseCase.changeRelaxTime(time).subscribe()
+    override fun onRelaxTimeChanged(time: Int) {
+        changeTimeUseCase.changeTypeTime(PomodoroTypeDomain.BREAK, time).subscribe()
     }
 
     override fun onInfinityChanged(isInfinite: Boolean) {

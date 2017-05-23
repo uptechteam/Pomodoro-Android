@@ -9,7 +9,7 @@ import com.team.uptech.pomodoro.presentation.ui.SettingsView
 interface SettingsPresenter : BasePresenter<SettingsView> {
     fun getPomodoroTime(pomodoroType: PomodoroType)
     fun getIsInfinite()
-    fun onChangeWorkTimeClicked(time: Int)
-    fun onChangeRelaxTimeClicked(time: Int)
+    fun onWorkTimeChanged(time: Int)
+    fun onRelaxTimeChanged(time: Int)
     fun onInfinityChanged(isInfinite: Boolean)
 }

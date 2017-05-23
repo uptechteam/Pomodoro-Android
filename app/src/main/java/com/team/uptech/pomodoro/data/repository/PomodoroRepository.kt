@@ -12,6 +12,7 @@ interface PomodoroRepository {
     fun getPomodoro(): Single<PomodoroData>
     fun getPomodoroTime(pomodoroType: String): Int
     fun savePomodoro(pomodoro: PomodoroData): Completable
+    fun saveTime(pomodoroType: String, time: Int): Completable
     fun getIsInfinite(): Boolean
     fun setIsInfinite(infinite: Boolean): Completable
 }

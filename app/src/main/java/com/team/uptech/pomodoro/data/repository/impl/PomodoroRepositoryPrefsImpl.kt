@@ -20,6 +20,8 @@ class PomodoroRepositoryPrefsImpl @Inject constructor(context: Context) : Pomodo
     private val TYPE = "TYPE"
     private val IS_INFINITE = "IS_INFINITE"
     private val IS_RUNNING = "IS_RUNNING"
+    private val TYPE1 = "WORK"
+    private val TYPE2 = "BREAK"
 
     override fun getPomodoro(): Single<PomodoroData> {
         try {
@@ -35,27 +37,39 @@ class PomodoroRepositoryPrefsImpl @Inject constructor(context: Context) : Pomodo
         }.subscribeOn(Schedulers.io())
     }
 
-    override fun getPomodoroType() = prefs.getString(TYPE, "WORK")
+    override fun getPomodoroType() = prefs.getString(TYPE, TYPE1)
 
-    override fun getPomodoroTime(pomodoroType: String) = prefs.getInt(pomodoroType, 0)
+    override fun getPomodoroTime(pomodoroType: String): Int {
+        if (pomodoroType == TYPE1) {
+            return prefs.getInt(pomodoroType, 10)
+        } else {
+            return prefs.getInt(pomodoroType, 5)
+        }
+    }
 
     override fun getIsInfinite() = prefs.getBoolean(IS_INFINITE, false)
 
     private fun getIsRunning() = prefs.getBoolean(IS_RUNNING, false)
 
     override fun savePomodoro(pomodoro: PomodoroData): Completable {
-        return Completable.fromSingle<Boolean> { sb ->
+        return Completable.create { sb ->
             prefs.edit().putString(TYPE, pomodoro.type).apply()
-            prefs.edit().putInt(pomodoro.type, pomodoro.time).apply()
             prefs.edit().putBoolean(IS_RUNNING, pomodoro.isRunning).apply()
-            sb.onSuccess(true)
+            sb.onComplete()
         }.subscribeOn(Schedulers.io())
     }
 
     override fun setIsInfinite(infinite: Boolean): Completable {
-        return Completable.fromSingle<Boolean> { sb ->
+        return Completable.create { sb ->
             prefs.edit().putBoolean(IS_INFINITE, infinite).apply()
-            sb.onSuccess(true)
+            sb.onComplete()
+        }.subscribeOn(Schedulers.io())
+    }
+
+    override fun saveTime(pomodoroType: String, time: Int): Completable {
+        return Completable.create { sb ->
+            prefs.edit().putInt(pomodoroType, time).apply()
+            sb.onComplete()
         }.subscribeOn(Schedulers.io())
     }
 }

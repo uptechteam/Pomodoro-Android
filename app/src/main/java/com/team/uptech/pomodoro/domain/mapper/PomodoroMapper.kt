@@ -16,18 +16,21 @@ fun mapToDataModel(pomodoro: PomodoroDomain): PomodoroData {
 
 fun mapToDomainModel(pomodoro: PomodoroData): PomodoroDomain {
     val typeEnum = PomodoroTypeDomain.valueOf(pomodoro.type)
+    typeEnum.time = pomodoro.time
     val result = PomodoroDomain(pomodoro.isRunning, typeEnum)
     return result
 }
 
 fun mapToDomainModel(pomodoro: Pomodoro): PomodoroDomain {
     val typeEnum = PomodoroTypeDomain.valueOf(pomodoro.type.toString())
+    typeEnum.time = pomodoro.type.time
     val result = PomodoroDomain(pomodoro.isRunning, typeEnum)
     return result
 }
 
 fun mapToPresentationModel(pomodoro: PomodoroDomain): Pomodoro {
     val typeEnum = PomodoroType.valueOf(pomodoro.type.toString())
+    typeEnum.time = pomodoro.type.time
     val result = Pomodoro(pomodoro.isRunning, typeEnum)
     return result
 }
