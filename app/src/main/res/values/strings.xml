@@ -4,5 +4,5 @@
     <string name="start_timer">Start</string>
     <string name="stop_timer">Stop</string>
     <string name="work">You are working now!</string>
-    <string name="not_work">Relax ^_^</string>
+    <string name="not_work">Timer is not working </string>
 </resources>

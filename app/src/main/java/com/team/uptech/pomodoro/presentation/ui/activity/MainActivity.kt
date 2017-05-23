@@ -49,6 +49,10 @@ class MainActivity : BaseActivity(), PomodoroView {
         presenter.bind(this)
     }
 
+//    override fun onRetainCustomNonConfigurationInstance(): Any {
+//        return presenter
+//    }
+
     override fun showProgress() {
         progress_bar.visibility = View.VISIBLE
     }
@@ -65,13 +69,14 @@ class MainActivity : BaseActivity(), PomodoroView {
     }
 
     override fun showTimer(pomodoro: Pomodoro) {
+        tickDisposable?.dispose()
         currentPomodoro = pomodoro
         currentPomodoro?.let {
             val maxValue = it.type.time
 
             val builder = generateNotificationBuilder(maxValue)
 
-            textView.textResource = R.string.work
+            textView.text = it.type.toString()
             button_start_stop.textResource = R.string.stop_timer
 
             timer_with_progress.visibility = View.GONE
@@ -86,10 +91,9 @@ class MainActivity : BaseActivity(), PomodoroView {
                     }, { error ->
                         showError(error.toString())
                     }, {
-                        presenter.onStartStopClicked()
+                        presenter.onTimerFinished()
                     })
         }
-
     }
 
     private fun generateNotificationBuilder(maxValue: Int): NotificationCompat.Builder {
@@ -112,8 +116,8 @@ class MainActivity : BaseActivity(), PomodoroView {
     override fun hideTimer() {
         timer_with_progress.progress = 0f
         timer_with_progress.visibility = View.GONE
-        tickDisposable?.dispose()
         notificationManager?.cancel(NOTIFICATION_ID)
+        tickDisposable?.dispose()
 
         textView.textResource = R.string.not_work
         button_start_stop.textResource = R.string.start_timer

@@ -8,6 +8,7 @@ import com.team.uptech.pomodoro.domain.mapper.mapToDomainModel
 import com.team.uptech.pomodoro.domain.mapper.mapToPresentationModel
 import com.team.uptech.pomodoro.domain.model.PomodoroTypeDomain
 import com.team.uptech.pomodoro.presentation.model.Pomodoro
+import io.reactivex.Maybe
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
@@ -18,25 +19,42 @@ import javax.inject.Inject
  */
 class StartTimerUseCaseImpl @Inject constructor(val pomodoroRepository: PomodoroRepository) : StartTimerUseCase {
 
-    override fun changeStartStop(): Single<Pomodoro> {
-        return Single.create<Pomodoro> { sb ->
+    override fun startNew(): Maybe<Pomodoro> {
+        return Maybe.create<Pomodoro> { sb ->
             pomodoroRepository.getPomodoro()
                     .subscribe({
                         val currentPomodoro = mapToDomainModel(it)
-                        currentPomodoro.isRunning = !currentPomodoro.isRunning
                         currentPomodoro.type =
                                 if (currentPomodoro.type == PomodoroTypeDomain.WORK)
                                     PomodoroTypeDomain.BREAK
                                 else
                                     PomodoroTypeDomain.WORK
+                        if (pomodoroRepository.getIsInfinite()) {
+                            sb.onSuccess(mapToPresentationModel(currentPomodoro))
+                        } else {
+                            currentPomodoro.isRunning = !currentPomodoro.isRunning
+                            sb.onComplete()
+                        }
+                        pomodoroRepository.savePomodoro(mapToDataModel(currentPomodoro)).subscribe()
 
-                        sb.onSuccess(mapToPresentationModel(currentPomodoro))
+                    }, {
+                        Log.e("Error", it.toString())
+                    })
+        }.subscribeOn(Schedulers.io())
+    }
+
+    override fun changeStartStop(): Single<Pomodoro> {
+        return Single.create<Pomodoro> { sb ->
+            pomodoroRepository.getPomodoro()
+                    .subscribe({
+                        sb.onSuccess(mapToPresentationModel(mapToDomainModel(it)))
                     }, {
                         Log.e("Error", it.toString())
                     })
         }.doAfterSuccess {
-            pomodoroRepository.savePomodoro(mapToDataModel(mapToDomainModel(it))).subscribe()
-        }
-                .subscribeOn(Schedulers.io())
+            val currentPomodoro = mapToDomainModel(it)
+            currentPomodoro.isRunning = !currentPomodoro.isRunning
+            pomodoroRepository.savePomodoro(mapToDataModel(currentPomodoro)).subscribe()
+        }.subscribeOn(Schedulers.io())
     }
 }

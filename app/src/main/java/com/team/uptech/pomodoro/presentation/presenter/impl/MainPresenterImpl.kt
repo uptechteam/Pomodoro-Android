@@ -12,6 +12,7 @@ import javax.inject.Inject
  */
 @PerActivity
 class MainPresenterImpl @Inject constructor(val startTimerUseCase: StartTimerUseCase) : MainPresenter {
+
     private var pomodoroView: PomodoroView? = null
 
     override fun bind(view: PomodoroView) {
@@ -35,5 +36,19 @@ class MainPresenterImpl @Inject constructor(val startTimerUseCase: StartTimerUse
                         pomodoroView?.showTimer(it)
                     }
                 }, { pomodoroView?.showError(it.toString()) })
+    }
+
+    override fun onTimerFinished() {
+        startTimerUseCase.startNew()
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnSubscribe { pomodoroView?.showProgress() }
+                .doAfterTerminate { pomodoroView?.hideProgress() }
+                .subscribe({sb ->
+                    pomodoroView?.showTimer(sb)
+                }, { error ->
+                    pomodoroView?.showError(error.toString())
+                }, {
+                    pomodoroView?.hideTimer()
+                })
     }
 }

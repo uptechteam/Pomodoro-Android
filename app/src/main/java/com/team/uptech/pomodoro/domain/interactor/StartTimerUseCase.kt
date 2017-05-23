@@ -1,6 +1,7 @@
 package com.team.uptech.pomodoro.domain.interactor
 
 import com.team.uptech.pomodoro.presentation.model.Pomodoro
+import io.reactivex.Maybe
 import io.reactivex.Single
 
 /**
@@ -8,4 +9,5 @@ import io.reactivex.Single
  */
 interface StartTimerUseCase {
     fun changeStartStop(): Single<Pomodoro>
+    fun startNew(): Maybe<Pomodoro>
 }

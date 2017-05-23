@@ -8,11 +8,22 @@
             android:key="switch_preference_1"
             android:title="Switch preference" />
         <EditTextPreference
-            android:defaultValue="Default value"
-            android:key="edit_text_preference_1"
+            android:defaultValue="25"
+            android:dialogMessage="asd"
+            android:inputType="number"
+            android:key="work_time"
             android:selectAllOnFocus="true"
             android:singleLine="true"
-            android:title="Edit text preference" />
+            android:title="Working time" />
+
+        <EditTextPreference
+            android:defaultValue="5"
+            android:dialogMessage="dsa"
+            android:inputType="number"
+            android:key="relax_time"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:title="Relax time" />
     </PreferenceCategory>
     <PreferenceCategory android:title="Preference category">
 

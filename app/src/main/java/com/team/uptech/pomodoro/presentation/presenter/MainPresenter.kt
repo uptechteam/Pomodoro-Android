@@ -7,4 +7,5 @@ import com.team.uptech.pomodoro.presentation.ui.PomodoroView
  */
 interface MainPresenter: BasePresenter<PomodoroView>{
     fun onStartStopClicked()
+    fun onTimerFinished()
 }
