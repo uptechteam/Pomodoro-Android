@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.BitmapFactory
 import android.os.Bundle
+import android.os.Vibrator
 import android.support.v4.app.NotificationCompat
 import android.view.Menu
 import android.view.MenuItem
@@ -97,6 +98,7 @@ class MainActivity : BaseActivity(), MainView {
     }
 
     override fun hideTimer() {
+        (getSystemService(VIBRATOR_SERVICE) as? Vibrator)?.vibrate(800)
         timer_with_progress.progress = 0f
         timer_with_progress.visibility = View.GONE
         notificationManager?.cancel(NOTIFICATION_ID)

@@ -7,13 +7,13 @@ import android.preference.SwitchPreference
 import android.support.v7.app.AlertDialog
 import android.view.View
 import android.widget.Toast
-import com.team.uptech.pomodoro.dagger.ActivityComponent
 import com.team.uptech.pomodoro.R
-import com.team.uptech.pomodoro.utils.getAppComponent
+import com.team.uptech.pomodoro.dagger.ActivityComponent
 import com.team.uptech.pomodoro.presentation.model.PomodoroType
 import com.team.uptech.pomodoro.presentation.presenter.SettingsPresenter
-import com.team.uptech.pomodoro.presentation.ui.view.SettingsView
 import com.team.uptech.pomodoro.presentation.ui.activity.BaseActivity
+import com.team.uptech.pomodoro.presentation.ui.view.SettingsView
+import com.team.uptech.pomodoro.utils.getAppComponent
 import javax.inject.Inject
 
 
@@ -48,7 +48,7 @@ class SettingsFragment : PreferenceFragment(), SettingsView {
         val workTimePreference = findPreference("work_time") as EditTextPreference
         workTimePreference.summary = workTime.toString()
         workTimePreference.text = workTime.toString()
-        workTimePreference.setOnPreferenceChangeListener { preference, time ->
+        workTimePreference.setOnPreferenceChangeListener { _, time ->
             presenter.onWorkTimeChanged(Integer.valueOf(time.toString()))
             workTimePreference.summary = time.toString()
             true
@@ -59,7 +59,7 @@ class SettingsFragment : PreferenceFragment(), SettingsView {
         val relaxTimePreference = findPreference("relax_time") as EditTextPreference
         relaxTimePreference.summary = relaxTime.toString()
         relaxTimePreference.text = relaxTime.toString()
-        relaxTimePreference.setOnPreferenceChangeListener { preference, time ->
+        relaxTimePreference.setOnPreferenceChangeListener { _, time ->
             presenter.onRelaxTimeChanged(Integer.valueOf(time.toString()))
             relaxTimePreference.summary = time.toString()
             true
@@ -71,7 +71,7 @@ class SettingsFragment : PreferenceFragment(), SettingsView {
         if (infiniteTimer.isChecked != isInfinite) {
             infiniteTimer.isChecked = isInfinite
         }
-        infiniteTimer.setOnPreferenceChangeListener { preference, isChecked ->
+        infiniteTimer.setOnPreferenceChangeListener { _, isChecked ->
             presenter.onInfinityChanged(isChecked as Boolean)
             true
         }
