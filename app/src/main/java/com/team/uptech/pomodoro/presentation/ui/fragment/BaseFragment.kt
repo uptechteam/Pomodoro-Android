@@ -5,8 +5,8 @@ import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.team.uptech.pomodoro.ActivityComponent
-import com.team.uptech.pomodoro.getAppComponent
+import com.team.uptech.pomodoro.dagger.ActivityComponent
+import com.team.uptech.pomodoro.utils.getAppComponent
 
 /**
  * Created on 18.05.17.

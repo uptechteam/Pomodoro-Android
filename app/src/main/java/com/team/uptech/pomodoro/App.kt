@@ -4,12 +4,15 @@ import android.app.Application
 import android.content.Context
 import android.support.multidex.MultiDex
 import com.facebook.stetho.Stetho
+import com.team.uptech.pomodoro.dagger.AppComponent
+import com.team.uptech.pomodoro.dagger.AppModule
+import com.team.uptech.pomodoro.dagger.DaggerAppComponent
 
 
 /**
  * Created on 26.04.17.
  */
-class PomodoroApplication : Application() {
+class App : Application() {
     lateinit var appComponent: AppComponent
 
     override fun onCreate() {

@@ -7,12 +7,12 @@ import android.preference.SwitchPreference
 import android.support.v7.app.AlertDialog
 import android.view.View
 import android.widget.Toast
-import com.team.uptech.pomodoro.ActivityComponent
+import com.team.uptech.pomodoro.dagger.ActivityComponent
 import com.team.uptech.pomodoro.R
-import com.team.uptech.pomodoro.getAppComponent
+import com.team.uptech.pomodoro.utils.getAppComponent
 import com.team.uptech.pomodoro.presentation.model.PomodoroType
 import com.team.uptech.pomodoro.presentation.presenter.SettingsPresenter
-import com.team.uptech.pomodoro.presentation.ui.SettingsView
+import com.team.uptech.pomodoro.presentation.ui.view.SettingsView
 import com.team.uptech.pomodoro.presentation.ui.activity.BaseActivity
 import javax.inject.Inject
 

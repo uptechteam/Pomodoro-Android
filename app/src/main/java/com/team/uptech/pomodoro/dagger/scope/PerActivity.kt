@@ -1,4 +1,4 @@
-package com.team.uptech.pomodoro
+package com.team.uptech.pomodoro.dagger.scope
 
 import javax.inject.Scope
 

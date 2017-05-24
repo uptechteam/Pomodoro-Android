@@ -24,13 +24,13 @@ class PomodoroRepositoryPrefsImpl @Inject constructor(context: Context) : Pomodo
     private val TYPE2 = "BREAK"
 
     override fun getPomodoro(): Single<PomodoroData> {
-        try {
-            Thread.sleep(500)
-        } catch (e: InterruptedException) {
-            e.printStackTrace()
-        }
-
         return Single.create<PomodoroData> { subcriber ->
+            try {
+                Thread.sleep(500)
+            } catch (e: InterruptedException) {
+                subcriber.onError(e)
+            }
+
             val pomodoroType = getPomodoroType()
             val pomodoro = PomodoroData(pomodoroType, getPomodoroTime(pomodoroType), getIsRunning())
             subcriber.onSuccess(pomodoro)

@@ -3,8 +3,8 @@ package com.team.uptech.pomodoro.presentation.ui.activity
 import android.os.Build
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
-import com.team.uptech.pomodoro.ActivityComponent
-import com.team.uptech.pomodoro.getAppComponent
+import com.team.uptech.pomodoro.dagger.ActivityComponent
+import com.team.uptech.pomodoro.utils.getAppComponent
 
 /**
  * Created on 26.04.17.

@@ -1,7 +1,7 @@
 package com.team.uptech.pomodoro.presentation.presenter
 
 import com.team.uptech.pomodoro.presentation.model.PomodoroType
-import com.team.uptech.pomodoro.presentation.ui.SettingsView
+import com.team.uptech.pomodoro.presentation.ui.view.SettingsView
 
 /**
  * Created on 18.05.17.

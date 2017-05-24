@@ -7,7 +7,7 @@ import io.reactivex.Single
 /**
  * Created on 22.05.17.
  */
-interface ChangeTimeUseCase {
+interface ChangeSettingsUseCase {
     fun getPomodoroTypeTime(type: PomodoroTypeDomain): Single<Int>
     fun getIsInfinite(): Boolean
     fun changeTypeTime(type: PomodoroTypeDomain, time: Int): Completable

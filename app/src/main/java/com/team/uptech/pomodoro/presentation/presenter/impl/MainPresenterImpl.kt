@@ -1,9 +1,9 @@
 package com.team.uptech.pomodoro.presentation.presenter.impl
 
-import com.team.uptech.pomodoro.PerActivity
+import com.team.uptech.pomodoro.dagger.scope.PerActivity
 import com.team.uptech.pomodoro.domain.interactor.StartTimerUseCase
 import com.team.uptech.pomodoro.presentation.presenter.MainPresenter
-import com.team.uptech.pomodoro.presentation.ui.PomodoroView
+import com.team.uptech.pomodoro.presentation.ui.view.MainView
 import io.reactivex.android.schedulers.AndroidSchedulers
 import javax.inject.Inject
 
@@ -13,42 +13,42 @@ import javax.inject.Inject
 @PerActivity
 class MainPresenterImpl @Inject constructor(val startTimerUseCase: StartTimerUseCase) : MainPresenter {
 
-    private var pomodoroView: PomodoroView? = null
+    private var mainView: MainView? = null
 
-    override fun bind(view: PomodoroView) {
-        this.pomodoroView = view
+    override fun bind(view: MainView) {
+        this.mainView = view
     }
 
     override fun unbind() {
-        pomodoroView?.showMessage("onDestroy()")
-        this.pomodoroView = null
+        mainView?.showMessage("onDestroy()")
+        this.mainView = null
     }
 
     override fun onStartStopClicked() {
         startTimerUseCase.changeStartStop()
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnSubscribe { pomodoroView?.showProgress() }
-                .doAfterTerminate { pomodoroView?.hideProgress() }
+                .doOnSubscribe { mainView?.showProgress() }
+                .doAfterTerminate { mainView?.hideProgress() }
                 .subscribe({
                     if (it.isRunning) {
-                        pomodoroView?.hideTimer()
+                        mainView?.hideTimer()
                     } else {
-                        pomodoroView?.showTimer(it)
+                        mainView?.showTimer(it)
                     }
-                }, { pomodoroView?.showError(it.toString()) })
+                }, { mainView?.showError(it.toString()) })
     }
 
     override fun onTimerFinished() {
         startTimerUseCase.startNew()
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnSubscribe { pomodoroView?.showProgress() }
-                .doAfterTerminate { pomodoroView?.hideProgress() }
+                .doOnSubscribe { mainView?.showProgress() }
+                .doAfterTerminate { mainView?.hideProgress() }
                 .subscribe({sb ->
-                    pomodoroView?.showTimer(sb)
+                    mainView?.showTimer(sb)
                 }, { error ->
-                    pomodoroView?.showError(error.toString())
+                    mainView?.showError(error.toString())
                 }, {
-                    pomodoroView?.hideTimer()
+                    mainView?.hideTimer()
                 })
     }
 }

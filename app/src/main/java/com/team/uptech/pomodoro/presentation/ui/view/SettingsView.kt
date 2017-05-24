@@ -1,4 +1,4 @@
-package com.team.uptech.pomodoro.presentation.ui
+package com.team.uptech.pomodoro.presentation.ui.view
 
 /**
  * Created on 18.05.17.

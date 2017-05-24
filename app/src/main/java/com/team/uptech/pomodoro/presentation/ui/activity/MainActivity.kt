@@ -14,7 +14,7 @@ import android.widget.Toast
 import com.team.uptech.pomodoro.R
 import com.team.uptech.pomodoro.presentation.model.Pomodoro
 import com.team.uptech.pomodoro.presentation.presenter.MainPresenter
-import com.team.uptech.pomodoro.presentation.ui.PomodoroView
+import com.team.uptech.pomodoro.presentation.ui.view.MainView
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
@@ -28,7 +28,7 @@ import javax.inject.Inject
 /**
  * Created on 26.04.17.
  */
-class MainActivity : BaseActivity(), PomodoroView {
+class MainActivity : BaseActivity(), MainView {
     @Inject lateinit var presenter: MainPresenter
 
     private var notificationManager: NotificationManager? = null
@@ -96,6 +96,18 @@ class MainActivity : BaseActivity(), PomodoroView {
         }
     }
 
+    override fun hideTimer() {
+        timer_with_progress.progress = 0f
+        timer_with_progress.visibility = View.GONE
+        notificationManager?.cancel(NOTIFICATION_ID)
+        tickDisposable?.dispose()
+
+        textView.textResource = R.string.not_work
+        button_start_stop.textResource = R.string.start_timer
+    }
+
+    override fun showMessage(message: String) = Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+
     private fun generateNotificationBuilder(maxValue: Int): NotificationCompat.Builder {
         val builder = NotificationCompat.Builder(applicationContext)
                 .setSmallIcon(R.drawable.angry_pomodoro)
@@ -112,18 +124,6 @@ class MainActivity : BaseActivity(), PomodoroView {
         notificationManager?.notify(NOTIFICATION_ID, builder.build())
         return builder
     }
-
-    override fun hideTimer() {
-        timer_with_progress.progress = 0f
-        timer_with_progress.visibility = View.GONE
-        notificationManager?.cancel(NOTIFICATION_ID)
-        tickDisposable?.dispose()
-
-        textView.textResource = R.string.not_work
-        button_start_stop.textResource = R.string.start_timer
-    }
-
-    override fun showMessage(message: String) = Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
 
     private fun tick() = Observable.interval(1, TimeUnit.SECONDS)
             .take(currentPomodoro?.type?.time?.toLong() ?: 0)

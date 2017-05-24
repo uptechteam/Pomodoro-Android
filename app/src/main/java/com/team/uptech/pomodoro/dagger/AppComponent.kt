@@ -1,4 +1,4 @@
-package com.team.uptech.pomodoro
+package com.team.uptech.pomodoro.dagger
 
 import dagger.Component
 import javax.inject.Singleton

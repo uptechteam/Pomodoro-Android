@@ -1,5 +1,6 @@
-package com.team.uptech.pomodoro
+package com.team.uptech.pomodoro.dagger
 
+import com.team.uptech.pomodoro.dagger.scope.PerActivity
 import com.team.uptech.pomodoro.presentation.ui.activity.MainActivity
 import com.team.uptech.pomodoro.presentation.ui.fragment.SettingsFragment
 import dagger.Subcomponent

@@ -1,11 +1,11 @@
-package com.team.uptech.pomodoro
+package com.team.uptech.pomodoro.dagger
 
 import android.content.Context
 import com.team.uptech.pomodoro.data.repository.PomodoroRepository
 import com.team.uptech.pomodoro.data.repository.impl.PomodoroRepositoryPrefsImpl
-import com.team.uptech.pomodoro.domain.interactor.ChangeTimeUseCase
+import com.team.uptech.pomodoro.domain.interactor.ChangeSettingsUseCase
 import com.team.uptech.pomodoro.domain.interactor.StartTimerUseCase
-import com.team.uptech.pomodoro.domain.interactor.impl.ChangeTimeUseCaseImpl
+import com.team.uptech.pomodoro.domain.interactor.impl.ChangeSettingsUseCaseImpl
 import com.team.uptech.pomodoro.domain.interactor.impl.StartTimerUseCaseImpl
 import com.team.uptech.pomodoro.presentation.presenter.MainPresenter
 import com.team.uptech.pomodoro.presentation.presenter.SettingsPresenter
@@ -39,9 +39,9 @@ open class AppModule(private val context: Context) {
 
     @Provides
     @Singleton
-    fun provideChangeTimeUseCase(pomodoroRepository: PomodoroRepository): ChangeTimeUseCase = ChangeTimeUseCaseImpl(pomodoroRepository)
+    fun provideChangeTimeUseCase(pomodoroRepository: PomodoroRepository): ChangeSettingsUseCase = ChangeSettingsUseCaseImpl(pomodoroRepository)
 
     @Provides
     @Singleton
-    fun provideSettingsPresenter(changeTimeUseCase: ChangeTimeUseCase): SettingsPresenter = SettingsPresenterImpl(changeTimeUseCase)
+    fun provideSettingsPresenter(changeSettingsUseCase: ChangeSettingsUseCase): SettingsPresenter = SettingsPresenterImpl(changeSettingsUseCase)
 }

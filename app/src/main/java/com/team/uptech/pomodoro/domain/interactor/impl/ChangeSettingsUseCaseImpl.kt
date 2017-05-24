@@ -1,7 +1,7 @@
 package com.team.uptech.pomodoro.domain.interactor.impl
 
 import com.team.uptech.pomodoro.data.repository.PomodoroRepository
-import com.team.uptech.pomodoro.domain.interactor.ChangeTimeUseCase
+import com.team.uptech.pomodoro.domain.interactor.ChangeSettingsUseCase
 import com.team.uptech.pomodoro.domain.model.PomodoroTypeDomain
 import io.reactivex.Completable
 import io.reactivex.Single
@@ -10,7 +10,7 @@ import javax.inject.Inject
 /**
  * Created on 22.05.17.
  */
-class ChangeTimeUseCaseImpl @Inject constructor(val pomodoroRepository: PomodoroRepository) : ChangeTimeUseCase {
+class ChangeSettingsUseCaseImpl @Inject constructor(val pomodoroRepository: PomodoroRepository) : ChangeSettingsUseCase {
     override fun changeInfinity(isInfinite: Boolean) = pomodoroRepository.setIsInfinite(isInfinite)
 
     override fun getIsInfinite() = pomodoroRepository.getIsInfinite()
