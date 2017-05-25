@@ -10,10 +10,10 @@ pipeline {
         }
     }
 
-    environment {
+//    environment {
 //        POMODORO_KEYSTORE_ALIAS = credentials("POMODORO_KEYSTORE_ALIAS")
 //        POMODORO_KEYSTORE_PASSWORD = credentials("POMODORO_KEYSTORE_PASSWORD")
-    }
+//    }
 
 
     stages {
@@ -28,7 +28,7 @@ pipeline {
 
     post {
         success {
-            archiveArtifacts artifacts: "app/build/outputs/apk/*.apk", fingerprint: true
+//            archiveArtifacts artifacts: "app/build/outputs/apk/*.apk", fingerprint: true
             echo "Build succeeded."
         }
 
