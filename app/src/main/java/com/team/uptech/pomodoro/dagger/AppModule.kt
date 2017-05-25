@@ -1,6 +1,7 @@
 package com.team.uptech.pomodoro.dagger
 
 import android.content.Context
+import com.team.uptech.pomodoro.TimerSubject
 import com.team.uptech.pomodoro.data.repository.PomodoroRepository
 import com.team.uptech.pomodoro.data.repository.impl.PomodoroRepositoryPrefsImpl
 import com.team.uptech.pomodoro.domain.interactor.ChangeSettingsUseCase
@@ -44,4 +45,8 @@ open class AppModule(private val context: Context) {
     @Provides
     @Singleton
     fun provideSettingsPresenter(changeSettingsUseCase: ChangeSettingsUseCase): SettingsPresenter = SettingsPresenterImpl(changeSettingsUseCase)
+
+    @Provides
+    @Singleton
+    fun provideTimerSubject(): TimerSubject = TimerSubject(context)
 }

@@ -28,6 +28,10 @@
         <activity
             android:name=".presentation.ui.activity.SettingsActivity"
             android:theme="@style/AppTheme.NoActionBar" />
+
+        <service
+            android:name=".TimerService"
+            android:exported="false" />
     </application>
 
 </manifest>
