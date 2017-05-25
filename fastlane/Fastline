@@ -20,7 +20,7 @@ platform :android do
   lane :test do
     # TODO find a way to run tests
     # gradle(task: "connectedAndroidTest")
-    gradle(task: "assemblePomodoroDebug")
+    gradle(task: "assembleDebug")
   end
 
   #desc "Submit a new Beta Build to Crashlytics Beta"
@@ -34,11 +34,11 @@ platform :android do
   #   )
   #end
 
-  desc "Deploy a new version to the Google Play"
-  lane :deploy do
-    gradle(task: "assembleRelease")
-    supply
-  end
+  #desc "Deploy a new version to the Google Play"
+  #lane :deploy do
+  #  gradle(task: "assembleRelease")
+  #  supply
+  #end
 
   # You can define as many lanes as you want
 
