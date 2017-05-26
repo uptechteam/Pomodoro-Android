@@ -18,8 +18,8 @@ pipeline {
 
         stage("Test") {
             steps {
-                echo 'Hello World'
-                //sh "fastlane test"
+                //echo 'Hello World'
+                sh "fastlane test"
             }
         }
     }
