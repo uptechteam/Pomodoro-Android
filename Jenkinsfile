@@ -1,6 +1,3 @@
-#!groovy​
-
-
 pipeline {
     agent { 
         docker {
@@ -21,7 +18,8 @@ pipeline {
 
         stage("Test") {
             steps {
-                sh "fastlane test"
+                echo 'Hello World'
+                //sh "fastlane test"
             }
         }
     }
