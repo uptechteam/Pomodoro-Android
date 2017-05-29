@@ -43,12 +43,26 @@ class MainPresenterImpl @Inject constructor(val startTimerUseCase: StartTimerUse
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe { mainView?.showProgress() }
                 .doAfterTerminate { mainView?.hideProgress() }
-                .subscribe({sb ->
+                .subscribe({ sb ->
                     mainView?.showTimer(sb)
                 }, { error ->
                     mainView?.showError(error.toString())
                 }, {
                     mainView?.hideTimer()
+                })
+    }
+
+    override fun getCurrentPomodoro() {
+        startTimerUseCase.getCurrentPomodoro()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({
+                    if (it.isRunning) {
+                        mainView?.showCurrentState(it)
+                    } else {
+                        mainView?.showMessage(it.type.toString() + " isRunning = false")
+                    }
+                }, { error ->
+                    mainView?.showError(error.toString())
                 })
     }
 }

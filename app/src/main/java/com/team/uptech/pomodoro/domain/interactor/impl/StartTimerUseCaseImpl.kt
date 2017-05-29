@@ -19,6 +19,18 @@ import javax.inject.Inject
  */
 class StartTimerUseCaseImpl @Inject constructor(val pomodoroRepository: PomodoroRepository) : StartTimerUseCase {
 
+    override fun getCurrentPomodoro(): Single<Pomodoro> {
+        return Single.create<Pomodoro> { sb ->
+            pomodoroRepository.getPomodoro()
+                    .subscribe({
+                        val currentPomodoro = mapToDomainModel(it)
+                        sb.onSuccess(mapToPresentationModel(currentPomodoro))
+                    }, {
+                        Log.e("Error", it.toString())
+                    })
+        }.subscribeOn(Schedulers.io())
+    }
+
     override fun startNew(): Maybe<Pomodoro> {
         return Maybe.create<Pomodoro> { sb ->
             pomodoroRepository.getPomodoro()

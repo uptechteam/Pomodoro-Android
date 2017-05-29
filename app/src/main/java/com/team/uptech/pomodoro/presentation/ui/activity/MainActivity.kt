@@ -29,6 +29,7 @@ class MainActivity : BaseActivity(), MainView {
     @Inject lateinit var presenter: MainPresenter
     @Inject lateinit var timer: TimerSubject
     private var tickDisposable: Disposable? = null
+    private var currentPomodoro: Pomodoro? = null
 
     override fun getContentView() = R.layout.activity_main
 
@@ -60,15 +61,25 @@ class MainActivity : BaseActivity(), MainView {
 
     override fun onResume() {
         super.onResume()
+        presenter.getCurrentPomodoro()
+    }
+
+    override fun showCurrentState(pomodoro: Pomodoro) {
+        currentPomodoro = pomodoro
+        textView.text = pomodoro.type.toString()
+        button_start_stop.textResource = R.string.stop_timer
+
+//        timer_with_progress.visibility = View.GONE
+        timer_with_progress.visibility = View.VISIBLE
+        timer_with_progress.progress = timer_with_progress.maxProgress / pomodoro.type.time
         tickDisposable = timer.timerSubject
                 ?.subscribe({ sb ->
                     Log.d("LOOOL", "MainActivity sb = " + sb)
-                    timer_with_progress.progress = timer_with_progress.maxProgress / 10 * (sb.toFloat() + 1)
+                    timer_with_progress.progress = timer_with_progress.maxProgress / pomodoro.type.time * (sb.toFloat() + 1)
                 }, { error ->
                     Log.d("LOOOL", "MainActivity errror = " + error.toString())
                 }, {
                     timer.timerSubject = PublishSubject.create()
-                    presenter.onTimerFinished() //must be in service!!!
                     Log.d("LOOOL", "MainActivity getTimerSubject onComplete")
                 })
     }
@@ -79,45 +90,26 @@ class MainActivity : BaseActivity(), MainView {
     }
 
     override fun showTimer(pomodoro: Pomodoro) {
+        currentPomodoro = pomodoro
         val serviceIntent = Intent(this, TimerService::class.java)
         serviceIntent.putExtra("TimerTime", pomodoro.type.time)
         startService(serviceIntent)
-//        timer.timerSubject
-//                ?.subscribe({ sb ->
-//                    Log.d("LOOOL", "MainActivity sb = " + sb)
-//                }, { error ->
-//                    Log.d("LOOOL", "MainActivity errror = " + error.toString())
-//                }, {
-//                    Log.d("LOOOL", "MainActivity getTimerSubject onComplete")
-//                })
-//        tickDisposable = timerService.timerSubject
-//                ?.subscribe({ sb ->
-//                    Log.d("LOOOL", "sb = " + sb)
-//                }, { error ->
-//                    Log.d("LOOOL", "errror = " + error.toString())
-//                }, {
-//                    Log.d("LOOOL", "getTimerSubject onComplete")
-//                })
-//        tickDisposable?.dispose()
-//        currentPomodoro = pomodoro
-//        currentPomodoro?.let {
-//
-            textView.text = pomodoro.type.toString()
-            button_start_stop.textResource = R.string.stop_timer
-//
-            timer_with_progress.visibility = View.GONE
-            timer_with_progress.visibility = View.VISIBLE
-            timer_with_progress.progress = timer_with_progress.maxProgress / pomodoro.type.time
-//            tickDisposable = tick()
-//                    .observeOn(AndroidSchedulers.mainThread())
-//                    .subscribe({ response ->
-//                        timer_with_progress.progress = timer_with_progress.maxProgress / maxValue * (response.toFloat() + 1)
-//                    }, { error ->
-//                        showError(error.toString())
-//                    }, {
-//                        presenter.onTimerFinished()
-//                    })
-//        }
+        textView.text = pomodoro.type.toString()
+        button_start_stop.textResource = R.string.stop_timer
+
+        timer_with_progress.visibility = View.GONE
+        timer_with_progress.visibility = View.VISIBLE
+        timer_with_progress.progress = timer_with_progress.maxProgress / pomodoro.type.time
+        tickDisposable = timer.timerSubject
+                ?.subscribe({ sb ->
+                    Log.d("LOOOL", "MainActivity sb = " + sb)
+                    timer_with_progress.progress = timer_with_progress.maxProgress / (currentPomodoro?.type?.time ?: 1) * (sb.toFloat() + 1)
+                }, { error ->
+                    Log.d("LOOOL", "MainActivity errror = " + error.toString())
+                }, {
+                    timer.timerSubject = PublishSubject.create()
+                    Log.d("LOOOL", "MainActivity getTimerSubject onComplete")
+                })
     }
 
     override fun hideTimer() {

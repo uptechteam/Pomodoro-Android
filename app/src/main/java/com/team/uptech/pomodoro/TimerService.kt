@@ -9,6 +9,7 @@ import android.os.IBinder
 import android.support.v4.app.NotificationCompat
 import android.util.Log
 import android.widget.Toast
+import com.team.uptech.pomodoro.presentation.presenter.MainPresenter
 import com.team.uptech.pomodoro.presentation.ui.activity.MainActivity
 import com.team.uptech.pomodoro.utils.getAppComponent
 import io.reactivex.disposables.Disposable
@@ -21,9 +22,11 @@ import javax.inject.Inject
 class TimerService : Service() {
 
     @Inject lateinit var timer: TimerSubject
+    @Inject lateinit var presenter: MainPresenter
 
     private var notificationManager: NotificationManager? = null
     private val NOTIFICATION_ID = 800
+    private val REMOVE_NOTIFICATION_ID = 1007
     private var tickDisposable: Disposable? = null
 
     private lateinit var notificationBuilder: NotificationCompat.Builder
@@ -38,10 +41,10 @@ class TimerService : Service() {
         Toast.makeText(this, "TimerService started!", Toast.LENGTH_SHORT).show()
         val timerTime = intent?.getIntExtra("TimerTime", 0) ?: 0
         val removeNotification = intent?.getIntExtra("StopService", 0) ?: 0
-        if (removeNotification == 1007) {
+        if (removeNotification == REMOVE_NOTIFICATION_ID) {
             stopSelf()
         } else {
-            notificationBuilder = generateNotificationBuilder(timerTime)
+            notificationBuilder = generateProgressBuilder(timerTime)
             startForeground(NOTIFICATION_ID, notificationBuilder.build())
 
             startTimer(timerTime)
@@ -63,44 +66,13 @@ class TimerService : Service() {
                 }, {
                     Log.d("LOOOL", "getTimerSubject onComplete")
                     timer.timerSubject = PublishSubject.create()
+                    presenter.onTimerFinished()
                     startForeground(NOTIFICATION_ID, generateDoneBuilder().build())
                     stopForeground(false)
-//                    notificationManager?.notify(NOTIFICATION_ID, generateDoneBuilder().build())
-
                 })
-
-//        timerSubject = BehaviorSubject.create()
-
-//        val maxValue = it.type.time
-
-//        textView.text = it.type.toString()
-//        button_start_stop.textResource = R.string.stop_timer
-//
-//        timer_with_progress.visibility = View.GONE
-//        timer_with_progress.visibility = View.VISIBLE
-//        timer_with_progress.progress = timer_with_progress.maxProgress / maxValue
-//        tickDisposable = tick(timerTime)
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .subscribe({ response ->
-//                    notificationBuilder.setProgress(timerTime, response, false)
-//                    startForeground(NOTIFICATION_ID, notificationBuilder.build())
-////                    notificationManager?.notify(NOTIFICATION_ID, notificationBuilder.build())
-//                    timerSubject?.onNext(response)
-////                        timer_with_progress.progress = timer_with_progress.maxProgress / maxValue * (response.toFloat() + 1)
-//                }, { error ->
-//                    Log.e("TimerService", "", error)
-//                }, {
-////                    timerSubject?.onComplete()
-//                    stopForeground(true)
-//                    //                        presenter.onTimerFinished()
-//                })
     }
 
-//    private fun tick(timerTime: Int) = Observable.interval(1, TimeUnit.SECONDS)
-//            .take(timerTime.toLong())
-//            .map { it.toInt() + 1 } //start from first
-
-    private fun generateNotificationBuilder(maxValue: Int): NotificationCompat.Builder {
+    private fun generateProgressBuilder(maxValue: Int): NotificationCompat.Builder {
         val builder = NotificationCompat.Builder(applicationContext)
                 .setSmallIcon(R.mipmap.ic_launcher_round)
                 .setProgress(maxValue, 0, false)
@@ -111,8 +83,6 @@ class TimerService : Service() {
         val resultIntent = Intent(applicationContext, MainActivity::class.java)
         val pendingIntent = PendingIntent.getActivity(applicationContext, System.currentTimeMillis().toInt(), resultIntent, 0)
         builder.setContentIntent(pendingIntent)
-//        notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-//        notificationManager?.notify(NOTIFICATION_ID, builder.build())
         return builder
     }
 
@@ -123,10 +93,16 @@ class TimerService : Service() {
                 .setContentTitle("^_^")
                 .setContentText("Well done!")
 
+        val resultIntent = Intent(applicationContext, MainActivity::class.java)
         val deleteIntent = Intent(applicationContext, TimerService::class.java)
-        deleteIntent.putExtra("StopService", 1007)
-        val pendingDeleteIntent = PendingIntent.getService(applicationContext, 1007, deleteIntent, PendingIntent.FLAG_CANCEL_CURRENT)
+        deleteIntent.putExtra("StopService", REMOVE_NOTIFICATION_ID)
+        val pendingDeleteIntent = PendingIntent.getService(applicationContext, REMOVE_NOTIFICATION_ID,
+                deleteIntent, PendingIntent.FLAG_CANCEL_CURRENT)
+        val pendingResultIntent = PendingIntent.getActivity(applicationContext,
+                System.currentTimeMillis().toInt(), resultIntent, 0)
+
         builder.setDeleteIntent(pendingDeleteIntent)
+        builder.setContentIntent(resultIntent)
         return builder
     }
 

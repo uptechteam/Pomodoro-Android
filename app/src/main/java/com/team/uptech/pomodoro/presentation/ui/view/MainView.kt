@@ -7,6 +7,7 @@ import com.team.uptech.pomodoro.presentation.model.Pomodoro
  */
 interface MainView : BaseView {
     fun showTimer(pomodoro: Pomodoro)
+    fun showCurrentState(pomodoro: Pomodoro)
     fun hideTimer()
     fun showMessage(message: String)
 }
