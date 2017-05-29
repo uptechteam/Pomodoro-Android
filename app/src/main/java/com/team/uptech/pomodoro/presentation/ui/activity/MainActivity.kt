@@ -29,7 +29,6 @@ class MainActivity : BaseActivity(), MainView {
     @Inject lateinit var presenter: MainPresenter
     @Inject lateinit var timer: TimerSubject
     private var tickDisposable: Disposable? = null
-    private var currentPomodoro: Pomodoro? = null
 
     override fun getContentView() = R.layout.activity_main
 
@@ -65,7 +64,6 @@ class MainActivity : BaseActivity(), MainView {
     }
 
     override fun showCurrentState(pomodoro: Pomodoro) {
-        currentPomodoro = pomodoro
         textView.text = pomodoro.type.toString()
         button_start_stop.textResource = R.string.stop_timer
 
@@ -90,7 +88,6 @@ class MainActivity : BaseActivity(), MainView {
     }
 
     override fun showTimer(pomodoro: Pomodoro) {
-        currentPomodoro = pomodoro
         val serviceIntent = Intent(this, TimerService::class.java)
         serviceIntent.putExtra("TimerTime", pomodoro.type.time)
         startService(serviceIntent)
@@ -103,7 +100,7 @@ class MainActivity : BaseActivity(), MainView {
         tickDisposable = timer.timerSubject
                 ?.subscribe({ sb ->
                     Log.d("LOOOL", "MainActivity sb = " + sb)
-                    timer_with_progress.progress = timer_with_progress.maxProgress / (currentPomodoro?.type?.time ?: 1) * (sb.toFloat() + 1)
+                    timer_with_progress.progress = timer_with_progress.maxProgress / (pomodoro.type.time) * (sb.toFloat() + 1)
                 }, { error ->
                     Log.d("LOOOL", "MainActivity errror = " + error.toString())
                 }, {

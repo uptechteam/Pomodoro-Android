@@ -93,16 +93,16 @@ class TimerService : Service() {
                 .setContentTitle("^_^")
                 .setContentText("Well done!")
 
-        val resultIntent = Intent(applicationContext, MainActivity::class.java)
         val deleteIntent = Intent(applicationContext, TimerService::class.java)
         deleteIntent.putExtra("StopService", REMOVE_NOTIFICATION_ID)
         val pendingDeleteIntent = PendingIntent.getService(applicationContext, REMOVE_NOTIFICATION_ID,
                 deleteIntent, PendingIntent.FLAG_CANCEL_CURRENT)
+        val resultIntent = Intent(applicationContext, MainActivity::class.java)
         val pendingResultIntent = PendingIntent.getActivity(applicationContext,
                 System.currentTimeMillis().toInt(), resultIntent, 0)
 
         builder.setDeleteIntent(pendingDeleteIntent)
-        builder.setContentIntent(resultIntent)
+        builder.setContentIntent(pendingResultIntent)
         return builder
     }
 
