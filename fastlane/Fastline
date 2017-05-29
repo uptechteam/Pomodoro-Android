@@ -20,7 +20,7 @@ platform :android do
   lane :test do
     # TODO find a way to run tests
     # gradle(task: "connectedAndroidTest")
-    gradle(task: "assembleDebug")
+    gradle(task: "clean")
   end
 
   #desc "Submit a new Beta Build to Crashlytics Beta"
