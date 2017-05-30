@@ -10,10 +10,10 @@ pipeline {
         }
     }
 
-//    environment {
-//        POMODORO_KEYSTORE_ALIAS = credentials("POMODORO_KEYSTORE_ALIAS")
-//        POMODORO_KEYSTORE_PASSWORD = credentials("POMODORO_KEYSTORE_PASSWORD")
-//    }
+    environment {
+        POMODORO_KEYSTORE_ALIAS = credentials("POMODORO_KEYSTORE_ALIAS")
+        POMODORO_KEYSTORE_PASSWORD = credentials("POMODORO_KEYSTORE_PASSWORD")
+    }
 
 
     stages {

@@ -13,7 +13,7 @@ import java.util.concurrent.TimeUnit
  * Created on 25.05.17.
  */
 
-class TimerSubject(val context: Context) {
+class TimerSubject(context: Context) {
     var timerSubject: PublishSubject<Int>? = PublishSubject.create()
 
     private var tickDisposable: Disposable? = null

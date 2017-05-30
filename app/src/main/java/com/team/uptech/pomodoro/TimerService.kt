@@ -37,7 +37,6 @@ class TimerService : Service() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        Log.d("LOOOL", "Service onStartCommand()")
         Toast.makeText(this, "TimerService started!", Toast.LENGTH_SHORT).show()
         val timerTime = intent?.getIntExtra("TimerTime", 0) ?: 0
         val removeNotification = intent?.getIntExtra("StopService", 0) ?: 0
