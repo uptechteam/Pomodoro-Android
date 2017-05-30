@@ -24,6 +24,14 @@ pipeline {
                 sh "fastlane test"
             }
         }
+
+        stage("QA Deploy") {
+//            when { branch "develop"}
+
+            steps {
+                sh "fastlane beta"
+            }
+        }
     }
 
     post {
