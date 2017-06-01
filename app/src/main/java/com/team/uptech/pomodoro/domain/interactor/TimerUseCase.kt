@@ -9,5 +9,5 @@ interface TimerUseCase {
     fun startTimer(timerTime: Int)
     fun stopTimer()
     fun getTimerSubject(): PublishSubject<Int>?
-    fun setTimerSubject(subject: PublishSubject<Int>)
+    fun timerFinished()
 }

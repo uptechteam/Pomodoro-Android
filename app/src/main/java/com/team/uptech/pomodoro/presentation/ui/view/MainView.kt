@@ -10,4 +10,5 @@ interface MainView : BaseView {
     fun showCurrentState(pomodoro: Pomodoro)
     fun hideTimer()
     fun showMessage(message: String)
+    fun updateTimerProgress(value: Int, maxValue: Int)
 }

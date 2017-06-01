@@ -6,9 +6,9 @@ import com.team.uptech.pomodoro.data.repository.impl.PomodoroRepositoryPrefsImpl
 import com.team.uptech.pomodoro.domain.interactor.ChangeSettingsUseCase
 import com.team.uptech.pomodoro.domain.interactor.StartTimerUseCase
 import com.team.uptech.pomodoro.domain.interactor.TimerUseCase
-import com.team.uptech.pomodoro.domain.interactor.impl.TimerUseCaseImpl
 import com.team.uptech.pomodoro.domain.interactor.impl.ChangeSettingsUseCaseImpl
 import com.team.uptech.pomodoro.domain.interactor.impl.StartTimerUseCaseImpl
+import com.team.uptech.pomodoro.domain.interactor.impl.TimerUseCaseImpl
 import com.team.uptech.pomodoro.presentation.presenter.MainPresenter
 import com.team.uptech.pomodoro.presentation.presenter.SettingsPresenter
 import com.team.uptech.pomodoro.presentation.presenter.impl.MainPresenterImpl
@@ -29,6 +29,10 @@ open class AppModule(private val context: Context) {
 
     @Provides
     @Singleton
+    fun provideTimerUseCase(): TimerUseCase = TimerUseCaseImpl(context)
+
+    @Provides
+    @Singleton
     fun providePomodoroRepository(): PomodoroRepository = PomodoroRepositoryPrefsImpl(context)
 
     @Provides
@@ -37,7 +41,7 @@ open class AppModule(private val context: Context) {
 
     @Provides
     @Singleton
-    fun provideMainPresenter(startTimerUseCase: StartTimerUseCase): MainPresenter = MainPresenterImpl(startTimerUseCase)
+    fun provideMainPresenter(startTimerUseCase: StartTimerUseCase, timerUseCase: TimerUseCase): MainPresenter = MainPresenterImpl(context, startTimerUseCase, timerUseCase)
 
     @Provides
     @Singleton
@@ -46,8 +50,4 @@ open class AppModule(private val context: Context) {
     @Provides
     @Singleton
     fun provideSettingsPresenter(changeSettingsUseCase: ChangeSettingsUseCase): SettingsPresenter = SettingsPresenterImpl(changeSettingsUseCase)
-
-    @Provides
-    @Singleton
-    fun provideTimerUseCase(): TimerUseCase = TimerUseCaseImpl(context)
 }

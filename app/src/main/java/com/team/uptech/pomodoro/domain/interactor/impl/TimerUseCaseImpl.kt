@@ -27,6 +27,9 @@ class TimerUseCaseImpl(context: Context) : TimerUseCase {
         tickDisposable?.dispose()
         tickDisposable = tick(timerTime)
                 .observeOn(AndroidSchedulers.mainThread())
+                .doOnSubscribe {
+                    subject?.onNext(1)
+                }
                 .subscribe({ response ->
                     subject?.onNext(response)
                 }, { error ->
@@ -45,11 +48,11 @@ class TimerUseCaseImpl(context: Context) : TimerUseCase {
 
     override fun getTimerSubject() = subject
 
-    override fun setTimerSubject(subject: PublishSubject<Int>) {
-        this.subject = subject
+    override fun timerFinished() {
+        subject = PublishSubject.create()
     }
 
     private fun tick(timerTime: Int) = Observable.interval(1, TimeUnit.SECONDS)
             .take(timerTime.toLong())
-            .map { it.toInt() + 1 } //start from first
+            .map { it.toInt() + 2 } //start right after subscribing
 }

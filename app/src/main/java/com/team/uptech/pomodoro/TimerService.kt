@@ -13,7 +13,6 @@ import com.team.uptech.pomodoro.presentation.presenter.MainPresenter
 import com.team.uptech.pomodoro.presentation.ui.activity.MainActivity
 import com.team.uptech.pomodoro.utils.getAppComponent
 import io.reactivex.disposables.Disposable
-import io.reactivex.subjects.PublishSubject
 import javax.inject.Inject
 
 /**
@@ -59,9 +58,9 @@ class TimerService : Service() {
                 }, { error ->
                     Log.e("TimerService", "", error)
                 }, {
-                    timer.setTimerSubject(PublishSubject.create())
+                    timer.timerFinished()
                     presenter.onTimerFinished()
-                    (getSystemService(VIBRATOR_SERVICE) as? Vibrator)?.vibrate(400)
+                    (getSystemService(VIBRATOR_SERVICE) as? Vibrator)?.vibrate(200)
                     startForeground(NOTIFICATION_ID, generateDoneBuilder().build())
                     stopForeground(false)
                 })
