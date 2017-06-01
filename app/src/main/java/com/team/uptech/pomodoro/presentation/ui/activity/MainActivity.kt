@@ -9,7 +9,7 @@ import android.view.View
 import android.widget.Toast
 import com.team.uptech.pomodoro.R
 import com.team.uptech.pomodoro.TimerService
-import com.team.uptech.pomodoro.TimerSubject
+import com.team.uptech.pomodoro.domain.interactor.TimerUseCase
 import com.team.uptech.pomodoro.presentation.model.Pomodoro
 import com.team.uptech.pomodoro.presentation.presenter.MainPresenter
 import com.team.uptech.pomodoro.presentation.ui.view.MainView
@@ -27,7 +27,7 @@ import javax.inject.Inject
 class MainActivity : BaseActivity(), MainView {
 
     @Inject lateinit var presenter: MainPresenter
-    @Inject lateinit var timer: TimerSubject
+    @Inject lateinit var timer: TimerUseCase
     private var tickDisposable: Disposable? = null
 
     override fun getContentView() = R.layout.activity_main
@@ -70,14 +70,14 @@ class MainActivity : BaseActivity(), MainView {
 //        timer_with_progress.visibility = View.GONE
         timer_with_progress.visibility = View.VISIBLE
         timer_with_progress.progress = timer_with_progress.maxProgress / pomodoro.type.time
-        tickDisposable = timer.timerSubject
+        tickDisposable = timer.getTimerSubject()
                 ?.subscribe({ sb ->
                     Log.d("LOOOL", "MainActivity sb = " + sb)
                     timer_with_progress.progress = timer_with_progress.maxProgress / pomodoro.type.time * (sb.toFloat() + 1)
                 }, { error ->
-                    Log.d("LOOOL", "MainActivity errror = " + error.toString())
+                    Log.d("MainActivity", "", error)
                 }, {
-                    timer.timerSubject = PublishSubject.create()
+                    timer.setTimerSubject(PublishSubject.create())
                     Log.d("LOOOL", "MainActivity getTimerSubject onComplete")
                 })
     }
@@ -89,7 +89,7 @@ class MainActivity : BaseActivity(), MainView {
 
     override fun showTimer(pomodoro: Pomodoro) {
         val serviceIntent = Intent(this, TimerService::class.java)
-        serviceIntent.putExtra("TimerTime", pomodoro.type.time)
+        serviceIntent.putExtra(TimerService.timerTime, pomodoro.type.time)
         startService(serviceIntent)
         textView.text = pomodoro.type.toString()
         button_start_stop.textResource = R.string.stop_timer
@@ -97,14 +97,14 @@ class MainActivity : BaseActivity(), MainView {
         timer_with_progress.visibility = View.GONE
         timer_with_progress.visibility = View.VISIBLE
         timer_with_progress.progress = timer_with_progress.maxProgress / pomodoro.type.time
-        tickDisposable = timer.timerSubject
+        tickDisposable = timer.getTimerSubject()
                 ?.subscribe({ sb ->
                     Log.d("LOOOL", "MainActivity sb = " + sb)
                     timer_with_progress.progress = timer_with_progress.maxProgress / (pomodoro.type.time) * (sb.toFloat() + 1)
                 }, { error ->
-                    Log.d("LOOOL", "MainActivity errror = " + error.toString())
+                    Log.d("MainActivity", "", error)
                 }, {
-                    timer.timerSubject = PublishSubject.create()
+                    timer.setTimerSubject(PublishSubject.create())
                     Log.d("LOOOL", "MainActivity getTimerSubject onComplete")
                 })
     }
@@ -135,5 +135,4 @@ class MainActivity : BaseActivity(), MainView {
         }
         return super.onOptionsItemSelected(item)
     }
-
 }

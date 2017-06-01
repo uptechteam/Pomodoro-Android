@@ -1,6 +1,6 @@
 package com.team.uptech.pomodoro.dagger
 
-import com.team.uptech.pomodoro.TimerSubject
+import com.team.uptech.pomodoro.domain.interactor.TimerUseCase
 import dagger.Component
 import javax.inject.Singleton
 
@@ -11,6 +11,5 @@ import javax.inject.Singleton
 @Component(modules = arrayOf(AppModule::class))
 interface AppComponent {
     fun activityComponent(): ActivityComponent
-    fun inject(timerSubject: TimerSubject)
-
+    fun inject(timerUseCase: TimerUseCase)
 }

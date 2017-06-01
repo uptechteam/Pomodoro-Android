@@ -1,7 +1,8 @@
-package com.team.uptech.pomodoro
+package com.team.uptech.pomodoro.domain.interactor.impl
 
 import android.content.Context
 import android.util.Log
+import com.team.uptech.pomodoro.domain.interactor.TimerUseCase
 import com.team.uptech.pomodoro.utils.getAppComponent
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -13,34 +14,39 @@ import java.util.concurrent.TimeUnit
  * Created on 25.05.17.
  */
 
-class TimerSubject(context: Context) {
-    var timerSubject: PublishSubject<Int>? = PublishSubject.create()
+class TimerUseCaseImpl(context: Context) : TimerUseCase {
 
+    private var subject: PublishSubject<Int>? = PublishSubject.create()
     private var tickDisposable: Disposable? = null
 
     init {
         context.getAppComponent().inject(this)
     }
 
-    fun startTimer(timerTime: Int) {
+    override fun startTimer(timerTime: Int) {
         tickDisposable?.dispose()
         tickDisposable = tick(timerTime)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ response ->
-                    timerSubject?.onNext(response)
+                    subject?.onNext(response)
                 }, { error ->
-                    timerSubject?.onError(error)
+                    subject?.onError(error)
                     Log.e("TimerService", "", error)
                     Log.d("LOOL", "error = " + error.toString())
                 }, {
-                    timerSubject?.onComplete()
+                    subject?.onComplete()
                     Log.e("LOOL", "TimerSubject onComplete()")
                 })
     }
 
-    fun stopTimer() {
-//        timerSubject = null
+    override fun stopTimer() {
         tickDisposable?.dispose()
+    }
+
+    override fun getTimerSubject() = subject
+
+    override fun setTimerSubject(subject: PublishSubject<Int>) {
+        this.subject = subject
     }
 
     private fun tick(timerTime: Int) = Observable.interval(1, TimeUnit.SECONDS)
