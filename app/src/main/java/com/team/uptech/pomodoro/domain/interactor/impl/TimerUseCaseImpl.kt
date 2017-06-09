@@ -1,11 +1,9 @@
 package com.team.uptech.pomodoro.domain.interactor.impl
 
-import android.content.Context
 import android.util.Log
 import com.team.uptech.pomodoro.data.model.PomodoroType
 import com.team.uptech.pomodoro.data.repository.PomodoroRepository
 import com.team.uptech.pomodoro.domain.interactor.TimerUseCase
-import com.team.uptech.pomodoro.utils.getAppComponent
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
@@ -16,14 +14,10 @@ import java.util.concurrent.TimeUnit
  * Created on 25.05.17.
  */
 
-class TimerUseCaseImpl(context: Context, val pomodoroRepository: PomodoroRepository) : TimerUseCase {
+class TimerUseCaseImpl(val pomodoroRepository: PomodoroRepository) : TimerUseCase {
 
     private var subject: PublishSubject<Int>? = PublishSubject.create()
     private var tickDisposable: Disposable? = null
-
-    init {
-        context.getAppComponent().inject(this)
-    }
 
     override fun startTimer(timerTime: Int) {
         tickDisposable?.dispose()

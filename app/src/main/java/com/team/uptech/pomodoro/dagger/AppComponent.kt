@@ -11,5 +11,4 @@ import javax.inject.Singleton
 @Component(modules = arrayOf(AppModule::class))
 interface AppComponent {
     fun activityComponent(): ActivityComponent
-    fun inject(timerUseCase: TimerUseCase)
 }
