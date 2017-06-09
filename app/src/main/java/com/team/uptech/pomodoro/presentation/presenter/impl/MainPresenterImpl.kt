@@ -3,12 +3,12 @@ package com.team.uptech.pomodoro.presentation.presenter.impl
 import android.content.Context
 import android.content.Intent
 import android.util.Log
-import com.team.uptech.pomodoro.TimerService
 import com.team.uptech.pomodoro.dagger.scope.PerActivity
+import com.team.uptech.pomodoro.data.model.PomodoroType
 import com.team.uptech.pomodoro.domain.interactor.StartTimerUseCase
 import com.team.uptech.pomodoro.domain.interactor.TimerUseCase
-import com.team.uptech.pomodoro.presentation.model.Pomodoro
 import com.team.uptech.pomodoro.presentation.presenter.MainPresenter
+import com.team.uptech.pomodoro.presentation.service.TimerService
 import com.team.uptech.pomodoro.presentation.ui.view.MainView
 import io.reactivex.android.schedulers.AndroidSchedulers
 import javax.inject.Inject
@@ -32,7 +32,7 @@ class MainPresenterImpl @Inject constructor(val context: Context,
         this.mainView = null
     }
 
-    override fun onStartStopClicked() {
+    override fun onStartClicked() {
         startTimerUseCase.changeStartStop()
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe { mainView?.showProgress() }
@@ -41,7 +41,7 @@ class MainPresenterImpl @Inject constructor(val context: Context,
                     timerUseCase.getTimerSubject()
                             ?.subscribe({ sb ->
                                 Log.d("LOOOL", "MainActivity sb = " + sb)
-                                mainView?.updateTimerProgress(sb, it.type.time)
+                                mainView?.updateTimerProgress(sb, it.time)
                             }, { error ->
                                 Log.d("MainActivity", "", error)
                             }, {
@@ -50,13 +50,19 @@ class MainPresenterImpl @Inject constructor(val context: Context,
                             })
                 }
                 .subscribe({
-                    if (it.isRunning) {
-                        mainView?.hideTimer()
-                        stopTimerService()
-                    } else {
-                        mainView?.showTimer(it)
-                        startTimerService(it)
-                    }
+                    mainView?.showTimer(it)
+                    startTimerService(it)
+                }, { mainView?.showError(it.toString()) })
+    }
+
+    override fun onStopClicked() {
+        startTimerUseCase.changeStartStop()
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnSubscribe { mainView?.showProgress() }
+                .doAfterTerminate { mainView?.hideProgress() }
+                .subscribe({
+                    mainView?.hideTimer()
+                    stopTimerService()
                 }, { mainView?.showError(it.toString()) })
     }
 
@@ -69,7 +75,7 @@ class MainPresenterImpl @Inject constructor(val context: Context,
                     timerUseCase.getTimerSubject()
                             ?.subscribe({ sb ->
                                 Log.d("LOOOL", "MainActivity sb = " + sb)
-                                mainView?.updateTimerProgress(sb, it.type.time)
+                                mainView?.updateTimerProgress(sb, it.time)
                             }, { error ->
                                 Log.d("MainActivity", "", error)
                             }, {
@@ -78,7 +84,7 @@ class MainPresenterImpl @Inject constructor(val context: Context,
                             })
                 }
                 .subscribe({
-//                    timerUseCase.startTimer(it.type.time)
+                    //                    timerUseCase.startTimer(it.type.time)
                     mainView?.showTimer(it)
                     startTimerService(it)
                 }, { error ->
@@ -89,9 +95,9 @@ class MainPresenterImpl @Inject constructor(val context: Context,
                 })
     }
 
-    private fun startTimerService(pomodoro: Pomodoro) {
+    private fun startTimerService(pomodoro: PomodoroType) {
         val serviceIntent = Intent(context, TimerService::class.java)
-        serviceIntent.putExtra(TimerService.timerTime, pomodoro.type.time)
+        serviceIntent.putExtra(TimerService.timerTime, pomodoro.time)
         context.startService(serviceIntent)
     }
 

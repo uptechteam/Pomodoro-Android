@@ -6,7 +6,8 @@ import com.team.uptech.pomodoro.presentation.ui.view.MainView
  * Created on 27.04.17.
  */
 interface MainPresenter: BasePresenter<MainView>{
-    fun onStartStopClicked()
+    fun onStartClicked()
+    fun onStopClicked()
     fun onTimerFinished()
     fun getCurrentPomodoro()
 }

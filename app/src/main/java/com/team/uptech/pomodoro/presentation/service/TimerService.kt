@@ -1,4 +1,4 @@
-package com.team.uptech.pomodoro
+package com.team.uptech.pomodoro.presentation.service
 
 import android.app.PendingIntent
 import android.app.Service
@@ -8,22 +8,33 @@ import android.os.Vibrator
 import android.support.v4.app.NotificationCompat
 import android.util.Log
 import android.widget.Toast
-import com.team.uptech.pomodoro.domain.interactor.TimerUseCase
+import com.team.uptech.pomodoro.R
 import com.team.uptech.pomodoro.presentation.presenter.MainPresenter
+import com.team.uptech.pomodoro.presentation.presenter.TimerPresenter
+import com.team.uptech.pomodoro.presentation.ui.ProgressListener
 import com.team.uptech.pomodoro.presentation.ui.activity.MainActivity
 import com.team.uptech.pomodoro.utils.getAppComponent
-import io.reactivex.disposables.Disposable
 import javax.inject.Inject
 
 /**
  * Created on 24.05.17.
  */
-class TimerService : Service() {
+class TimerService : Service(), ProgressListener {
+    override fun timerFinished() {
+        presenter.onTimerFinished()
+        (getSystemService(VIBRATOR_SERVICE) as? Vibrator)?.vibrate(200)
+        startForeground(NOTIFICATION_ID, generateDoneBuilder().build())
+        stopForeground(false)
+    }
 
-    @Inject lateinit var timer: TimerUseCase
+    override fun updateTimerProgress(value: Int, maxValue: Int) {
+        notificationBuilder.setProgress(maxValue, value, false)
+        startForeground(NOTIFICATION_ID, notificationBuilder.build())
+    }
+
+    @Inject lateinit var timerPresenter: TimerPresenter
     @Inject lateinit var presenter: MainPresenter
 
-    private var tickDisposable: Disposable? = null
 
     private lateinit var notificationBuilder: NotificationCompat.Builder
 
@@ -48,22 +59,8 @@ class TimerService : Service() {
     }
 
     private fun startTimer(timerTime: Int) {
-        timer.startTimer(timerTime)
-
-        tickDisposable = timer.getTimerSubject()
-                ?.subscribe({ sb ->
-                    Log.d("LOOOL", "sb = " + sb)
-                    notificationBuilder.setProgress(timerTime, sb, false)
-                    startForeground(NOTIFICATION_ID, notificationBuilder.build())
-                }, { error ->
-                    Log.e("TimerService", "", error)
-                }, {
-                    timer.timerFinished()
-                    presenter.onTimerFinished()
-                    (getSystemService(VIBRATOR_SERVICE) as? Vibrator)?.vibrate(200)
-                    startForeground(NOTIFICATION_ID, generateDoneBuilder().build())
-                    stopForeground(false)
-                })
+        timerPresenter.onStartTimerClicked(timerTime)
+        timerPresenter.setProgressListener(this)
     }
 
     private fun generateProgressBuilder(maxValue: Int): NotificationCompat.Builder {
@@ -102,8 +99,8 @@ class TimerService : Service() {
 
     override fun onDestroy() {
         Toast.makeText(this, "TimerService stopped!", Toast.LENGTH_SHORT).show()
-        tickDisposable?.dispose()
-        timer.stopTimer()
+        timerPresenter.onStopTimerClicked()
+        timerPresenter.setProgressListener(null)
         super.onDestroy()
     }
 

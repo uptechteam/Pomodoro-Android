@@ -11,8 +11,10 @@ import com.team.uptech.pomodoro.domain.interactor.impl.StartTimerUseCaseImpl
 import com.team.uptech.pomodoro.domain.interactor.impl.TimerUseCaseImpl
 import com.team.uptech.pomodoro.presentation.presenter.MainPresenter
 import com.team.uptech.pomodoro.presentation.presenter.SettingsPresenter
+import com.team.uptech.pomodoro.presentation.presenter.TimerPresenter
 import com.team.uptech.pomodoro.presentation.presenter.impl.MainPresenterImpl
 import com.team.uptech.pomodoro.presentation.presenter.impl.SettingsPresenterImpl
+import com.team.uptech.pomodoro.presentation.presenter.impl.TimerPresenterImpl
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
@@ -42,6 +44,10 @@ open class AppModule(private val context: Context) {
     @Provides
     @Singleton
     fun provideMainPresenter(startTimerUseCase: StartTimerUseCase, timerUseCase: TimerUseCase): MainPresenter = MainPresenterImpl(context, startTimerUseCase, timerUseCase)
+
+    @Provides
+    @Singleton
+    fun provideTimerPresenter(timerUseCase: TimerUseCase): TimerPresenter = TimerPresenterImpl(timerUseCase)
 
     @Provides
     @Singleton

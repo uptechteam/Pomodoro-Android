@@ -1,6 +1,6 @@
 package com.team.uptech.pomodoro.presentation.presenter
 
-import com.team.uptech.pomodoro.presentation.model.PomodoroType
+import com.team.uptech.pomodoro.data.model.PomodoroType
 import com.team.uptech.pomodoro.presentation.ui.view.SettingsView
 
 /**

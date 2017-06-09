@@ -6,8 +6,9 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import com.team.uptech.pomodoro.R
-import com.team.uptech.pomodoro.presentation.model.Pomodoro
+import com.team.uptech.pomodoro.data.model.PomodoroType
 import com.team.uptech.pomodoro.presentation.presenter.MainPresenter
+import com.team.uptech.pomodoro.presentation.ui.ProgressListener
 import com.team.uptech.pomodoro.presentation.ui.view.MainView
 import kotlinx.android.synthetic.main.activity_main.*
 import org.jetbrains.anko.startActivity
@@ -18,7 +19,7 @@ import javax.inject.Inject
 /**
  * Created on 26.04.17.
  */
-class MainActivity : BaseActivity(), MainView {
+class MainActivity : BaseActivity(), MainView, ProgressListener {
 
     @Inject lateinit var presenter: MainPresenter
 
@@ -30,7 +31,11 @@ class MainActivity : BaseActivity(), MainView {
         setSupportActionBar(toolbar)
 
         button_start_stop.setOnClickListener {
-            presenter.onStartStopClicked()
+            if (button_start_stop.text == getString(R.string.start_timer)) {
+                presenter.onStartClicked()
+            } else {
+                presenter.onStopClicked()
+            }
         }
         presenter.bind(this)
         presenter.getCurrentPomodoro()
@@ -65,15 +70,19 @@ class MainActivity : BaseActivity(), MainView {
         }
     }
 
-    override fun showCurrentState(pomodoro: Pomodoro) {
-        if (pomodoro.isRunning) {
-            textView.text = pomodoro.type.toString()
-        }
-        button_start_stop.textResource = if (pomodoro.isRunning) R.string.stop_timer else R.string.start_timer
+    override fun timerFinished() {
+        hideTimer()
     }
 
-    override fun showTimer(pomodoro: Pomodoro) {
-        textView.text = pomodoro.type.toString()
+    override fun showCurrentState(pomodoro: PomodoroType?) {
+        pomodoro?.let {
+            textView.text = pomodoro.name
+        }
+        button_start_stop.textResource = if (pomodoro != null) R.string.stop_timer else R.string.start_timer
+    }
+
+    override fun showTimer(pomodoro: PomodoroType) {
+        textView.text = pomodoro.name
         button_start_stop.textResource = R.string.stop_timer
     }
 

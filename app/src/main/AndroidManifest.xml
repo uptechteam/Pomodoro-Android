@@ -31,7 +31,7 @@
             android:theme="@style/AppTheme.NoActionBar" />
 
         <service
-            android:name=".TimerService"
+            android:name=".presentation.service.TimerService"
             android:exported="false" />
 
         <meta-data

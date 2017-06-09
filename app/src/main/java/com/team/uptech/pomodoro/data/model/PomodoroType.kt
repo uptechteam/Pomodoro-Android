@@ -1,7 +1,7 @@
-package com.team.uptech.pomodoro.presentation.model
+package com.team.uptech.pomodoro.data.model
 
 /**
- * Created on 27.04.17.
+ * Created on 04.05.17.
  */
 enum class PomodoroType(var time: Int) {
     WORK(10),
