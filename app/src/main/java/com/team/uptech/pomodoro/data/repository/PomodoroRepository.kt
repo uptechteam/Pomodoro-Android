@@ -8,7 +8,7 @@ import io.reactivex.Single
  * Created on 28.04.17.
  */
 interface PomodoroRepository {
-    fun getCurrentPomodoro(): Single<PomodoroType?> //null - timer is not running
+    fun getCurrentPomodoro(): Single<PomodoroType>
     fun saveCurrentPomodoro(pomodoro: PomodoroType?): Completable
     fun getPomodoroTypeTime(pomodoro: PomodoroType): Single<Int>
     fun savePomodoroTypeTime(pomodoro: PomodoroType, time: Int): Completable

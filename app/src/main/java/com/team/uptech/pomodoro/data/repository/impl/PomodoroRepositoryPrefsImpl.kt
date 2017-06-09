@@ -19,24 +19,23 @@ class PomodoroRepositoryPrefsImpl @Inject constructor(context: Context) : Pomodo
 
     private val prefs: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
 
-    override fun getCurrentPomodoro(): Single<PomodoroType?> {
-        return Single.create<PomodoroType?> { sb ->
-            val pomodoroType = getPomodoroType()
-            if (pomodoroType == "") {
-                sb.onSuccess(null)
-            }
-            val pomodoro = PomodoroType.valueOf(pomodoroType)
-            getPomodoroTypeTime(pomodoro).subscribe({
-                pomodoro.time = it
-                sb.onSuccess(pomodoro)
-            }, {
-                Log.e("PomodoroRepositoryPrefs", "", it)
-            })
+    override fun getCurrentPomodoro(): Single<PomodoroType> {
+        return Single.create<PomodoroType> { sb ->
+            val pomodoroTypeString = getPomodoroType()
+            val pomodoro = PomodoroType.valueOf(pomodoroTypeString)
+            getPomodoroTypeTime(pomodoro)
+                    .subscribe({
+                        pomodoro.time = it
+                        sb.onSuccess(pomodoro)
+                    }, {
+                        sb.onError(it)
+                        Log.e("PomodoroRepositoryPrefs", "", it)
+                    })
         }.subscribeOn(Schedulers.io())
                 .delay(1.toLong(), TimeUnit.SECONDS) //Just for testing =)
     }
 
-    private fun getPomodoroType() = prefs.getString(CURRENT_TYPE, TYPE_WORK)
+    private fun getPomodoroType() = prefs.getString(CURRENT_TYPE, TYPE_NOT_WORKING)
 
     override fun getIsInfiniteMode(): Single<Boolean> {
         return Single.create<Boolean> {
@@ -49,8 +48,10 @@ class PomodoroRepositoryPrefsImpl @Inject constructor(context: Context) : Pomodo
         return Single.create<Int> {
             if (pomodoro.name == TYPE_WORK) {
                 it.onSuccess(prefs.getInt(pomodoro.name, DEFAULT_WORK_TIME))
-            } else {
+            } else if (pomodoro.name == TYPE_BREAK) {
                 it.onSuccess(prefs.getInt(pomodoro.name, DEFAULT_BREAK_TIME))
+            } else {
+                it.onSuccess(prefs.getInt(pomodoro.name, 0))
             }
         }.subscribeOn(Schedulers.io())
     }
@@ -85,6 +86,7 @@ class PomodoroRepositoryPrefsImpl @Inject constructor(context: Context) : Pomodo
         private val IS_INFINITE = "IS_INFINITE"
         private val TYPE_WORK = "WORK"
         private val TYPE_BREAK = "BREAK"
+        private val TYPE_NOT_WORKING = "NOT_WORKING"
         private val DEFAULT_WORK_TIME = 10 //seconds (for testing)
         private val DEFAULT_BREAK_TIME = 5
     }

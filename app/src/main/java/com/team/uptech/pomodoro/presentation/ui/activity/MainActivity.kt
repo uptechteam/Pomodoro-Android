@@ -74,11 +74,13 @@ class MainActivity : BaseActivity(), MainView, ProgressListener {
         hideTimer()
     }
 
-    override fun showCurrentState(pomodoro: PomodoroType?) {
-        pomodoro?.let {
+    override fun showCurrentState(pomodoro: PomodoroType) {
+        if (pomodoro != PomodoroType.NOT_WORKING) {
             textView.text = pomodoro.name
+            button_start_stop.textResource =
+                    if (pomodoro == PomodoroType.WORK || pomodoro == PomodoroType.BREAK) R.string.stop_timer
+                    else R.string.start_timer
         }
-        button_start_stop.textResource = if (pomodoro != null) R.string.stop_timer else R.string.start_timer
     }
 
     override fun showTimer(pomodoro: PomodoroType) {

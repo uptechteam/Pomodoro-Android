@@ -20,21 +20,9 @@ import javax.inject.Inject
  * Created on 24.05.17.
  */
 class TimerService : Service(), ProgressListener {
-    override fun timerFinished() {
-        presenter.onTimerFinished()
-        (getSystemService(VIBRATOR_SERVICE) as? Vibrator)?.vibrate(200)
-        startForeground(NOTIFICATION_ID, generateDoneBuilder().build())
-        stopForeground(false)
-    }
-
-    override fun updateTimerProgress(value: Int, maxValue: Int) {
-        notificationBuilder.setProgress(maxValue, value, false)
-        startForeground(NOTIFICATION_ID, notificationBuilder.build())
-    }
 
     @Inject lateinit var timerPresenter: TimerPresenter
     @Inject lateinit var presenter: MainPresenter
-
 
     private lateinit var notificationBuilder: NotificationCompat.Builder
 
@@ -56,6 +44,18 @@ class TimerService : Service(), ProgressListener {
             startTimer(timerTime)
         }
         return START_STICKY
+    }
+
+    override fun timerFinished() {
+        presenter.onTimerFinished()
+        (getSystemService(VIBRATOR_SERVICE) as? Vibrator)?.vibrate(200)
+        startForeground(NOTIFICATION_ID, generateDoneBuilder().build())
+        stopForeground(false)
+    }
+
+    override fun updateTimerProgress(value: Int, maxValue: Int) {
+        notificationBuilder.setProgress(maxValue, value, false)
+        startForeground(NOTIFICATION_ID, notificationBuilder.build())
     }
 
     private fun startTimer(timerTime: Int) {

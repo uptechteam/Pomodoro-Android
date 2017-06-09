@@ -28,7 +28,7 @@ class MainPresenterImpl @Inject constructor(val context: Context,
     }
 
     override fun unbind() {
-        mainView?.showMessage("onDestroy()")
+//        mainView?.showMessage("onDestroy()")
         this.mainView = null
     }
 
@@ -40,8 +40,10 @@ class MainPresenterImpl @Inject constructor(val context: Context,
                 .doAfterSuccess {
                     timerUseCase.getTimerSubject()
                             ?.subscribe({ sb ->
-                                Log.d("LOOOL", "MainActivity sb = " + sb)
-                                mainView?.updateTimerProgress(sb, it.time)
+                                if (it != null) {
+                                    Log.d("LOOOL", "MainActivity sb = " + sb)
+                                    mainView?.updateTimerProgress(sb, it.time)
+                                }
                             }, { error ->
                                 Log.d("MainActivity", "", error)
                             }, {
@@ -52,7 +54,9 @@ class MainPresenterImpl @Inject constructor(val context: Context,
                 .subscribe({
                     mainView?.showTimer(it)
                     startTimerService(it)
-                }, { mainView?.showError(it.toString()) })
+                }, {
+                    mainView?.showError(it.toString())
+                })
     }
 
     override fun onStopClicked() {
@@ -63,7 +67,9 @@ class MainPresenterImpl @Inject constructor(val context: Context,
                 .subscribe({
                     mainView?.hideTimer()
                     stopTimerService()
-                }, { mainView?.showError(it.toString()) })
+                }, {
+                    mainView?.showError(it.toString())
+                })
     }
 
     override fun onTimerFinished() {
@@ -84,20 +90,19 @@ class MainPresenterImpl @Inject constructor(val context: Context,
                             })
                 }
                 .subscribe({
-                    //                    timerUseCase.startTimer(it.type.time)
                     mainView?.showTimer(it)
                     startTimerService(it)
                 }, { error ->
                     mainView?.showError(error.toString())
                 }, {
                     mainView?.hideTimer()
-                    stopTimerService()
+//                    stopTimerService()
                 })
     }
 
-    private fun startTimerService(pomodoro: PomodoroType) {
+    private fun startTimerService(pomodoro: PomodoroType?) {
         val serviceIntent = Intent(context, TimerService::class.java)
-        serviceIntent.putExtra(TimerService.timerTime, pomodoro.time)
+        serviceIntent.putExtra(TimerService.timerTime, pomodoro?.time)
         context.startService(serviceIntent)
     }
 

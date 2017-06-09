@@ -31,11 +31,11 @@ open class AppModule(private val context: Context) {
 
     @Provides
     @Singleton
-    fun provideTimerUseCase(): TimerUseCase = TimerUseCaseImpl(context)
+    fun providePomodoroRepository(): PomodoroRepository = PomodoroRepositoryPrefsImpl(context)
 
     @Provides
     @Singleton
-    fun providePomodoroRepository(): PomodoroRepository = PomodoroRepositoryPrefsImpl(context)
+    fun provideTimerUseCase(pomodoroRepository: PomodoroRepository): TimerUseCase = TimerUseCaseImpl(context, pomodoroRepository)
 
     @Provides
     @Singleton

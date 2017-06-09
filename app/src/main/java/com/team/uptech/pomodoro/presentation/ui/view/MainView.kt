@@ -8,7 +8,7 @@ import com.team.uptech.pomodoro.data.model.PomodoroType
  */
 interface MainView : BaseView {
     fun showTimer(pomodoro: PomodoroType)
-    fun showCurrentState(pomodoro: PomodoroType?)
+    fun showCurrentState(pomodoro: PomodoroType)
     fun hideTimer()
     fun showMessage(message: String)
     fun updateTimerProgress(value: Int, maxValue: Int)

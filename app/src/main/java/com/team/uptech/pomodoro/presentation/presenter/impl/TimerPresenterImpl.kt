@@ -33,13 +33,7 @@ class TimerPresenterImpl @Inject constructor(val timerUseCase: TimerUseCase) : T
                 })
     }
 
-    override fun onStopTimerClicked() {
-        timerUseCase.stopTimer()
-    }
+    override fun onStopTimerClicked() = timerUseCase.stopTimer()
 
-    override fun onTimerFinished() {
-        timerUseCase.timerFinished()
-    }
-
-
+    override fun onTimerFinished() = timerUseCase.timerFinished()
 }

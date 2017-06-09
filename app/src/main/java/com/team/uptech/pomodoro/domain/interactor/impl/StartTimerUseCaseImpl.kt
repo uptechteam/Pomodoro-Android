@@ -15,7 +15,7 @@ import javax.inject.Inject
  */
 class StartTimerUseCaseImpl @Inject constructor(val pomodoroRepository: PomodoroRepository) : StartTimerUseCase {
 
-    override fun getCurrentPomodoro(): Single<PomodoroType?> {
+    override fun getCurrentPomodoro(): Single<PomodoroType> {
         return Single.create<PomodoroType> { sb ->
             pomodoroRepository.getCurrentPomodoro()
                     .subscribe({
@@ -40,14 +40,13 @@ class StartTimerUseCaseImpl @Inject constructor(val pomodoroRepository: Pomodoro
                                 .subscribe({
                                     if (it) {
                                         sb.onSuccess(currentPomodoro)
+                                        pomodoroRepository.saveCurrentPomodoro(currentPomodoro).subscribe()
                                     } else {
                                         sb.onComplete()
                                     }
                                 }, {
                                     Log.e("StartTimerUseCase", "", it)
                                 })
-                        pomodoroRepository.saveCurrentPomodoro(currentPomodoro).subscribe()
-
                     }, {
                         Log.e("Error", it.toString())
                     })
@@ -58,14 +57,18 @@ class StartTimerUseCaseImpl @Inject constructor(val pomodoroRepository: Pomodoro
         return Single.create<PomodoroType> { sb ->
             pomodoroRepository.getCurrentPomodoro()
                     .subscribe({
-                        sb.onSuccess(it)
+                        var currentPomodoro = it
+                        currentPomodoro =
+                                if (currentPomodoro == PomodoroType.WORK)
+                                    PomodoroType.BREAK
+                                else
+                                    PomodoroType.WORK
+                        sb.onSuccess(currentPomodoro)
+                        pomodoroRepository.saveCurrentPomodoro(currentPomodoro).subscribe()
                     }, {
+                        sb.onError(it)
                         Log.e("Error", it.toString())
                     })
-        }.doAfterSuccess {
-            //            val currentPomodoro = it
-////            currentPomodoro.isRunning = !currentPomodoro.isRunning
-//            pomodoroRepository.saveCurrentPomodoro(currentPomodoro).subscribe()
         }.subscribeOn(Schedulers.io())
     }
 }

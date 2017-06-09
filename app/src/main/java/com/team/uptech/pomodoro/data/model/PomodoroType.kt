@@ -5,5 +5,6 @@ package com.team.uptech.pomodoro.data.model
  */
 enum class PomodoroType(var time: Int) {
     WORK(10),
-    BREAK(5)
+    BREAK(5),
+    NOT_WORKING(0)// timer is not working
 }

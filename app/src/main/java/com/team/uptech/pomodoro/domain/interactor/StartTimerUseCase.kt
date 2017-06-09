@@ -10,5 +10,5 @@ import io.reactivex.Single
 interface StartTimerUseCase {
     fun changeStartStop(): Single<PomodoroType>
     fun startNew(): Maybe<PomodoroType>
-    fun getCurrentPomodoro(): Single<PomodoroType?>
+    fun getCurrentPomodoro(): Single<PomodoroType>
 }
