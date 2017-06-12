@@ -34,11 +34,12 @@ class TimerService : Service(), ProgressListener {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         Toast.makeText(this, "TimerService started!", Toast.LENGTH_SHORT).show()
         val timerTime = intent?.getIntExtra(timerTime, 0) ?: 0
+        val timerType = intent?.getStringExtra(timerType) ?: ""
         val removeNotification = intent?.getIntExtra("StopService", 0) ?: 0
         if (removeNotification == REMOVE_NOTIFICATION_ID) {
             stopSelf()
         } else {
-            notificationBuilder = generateProgressBuilder(timerTime)
+            notificationBuilder = generateProgressBuilder(timerTime, timerType)
             startForeground(NOTIFICATION_ID, notificationBuilder.build())
 
             startTimer(timerTime)
@@ -63,13 +64,13 @@ class TimerService : Service(), ProgressListener {
         timerPresenter.setProgressListener(this)
     }
 
-    private fun generateProgressBuilder(maxValue: Int): NotificationCompat.Builder {
+    private fun generateProgressBuilder(maxValue: Int, type: String): NotificationCompat.Builder {
         val builder = NotificationCompat.Builder(applicationContext)
                 .setSmallIcon(R.mipmap.ic_launcher_round)
                 .setProgress(maxValue, 0, false)
                 .setLargeIcon(BitmapFactory.decodeResource(resources, R.drawable.angry_pomodoro))
-                .setContentTitle("Work! Work! Work")
-                .setContentText("You are working now!!!")
+                .setContentTitle(type)
+                .setContentText("This is a $type now!!!")
 
         val resultIntent = Intent(applicationContext, MainActivity::class.java)
         val pendingIntent = PendingIntent.getActivity(applicationContext, System.currentTimeMillis().toInt(), resultIntent, 0)
@@ -113,6 +114,7 @@ class TimerService : Service(), ProgressListener {
 
     companion object {
         val timerTime = "TimerTime"
+        val timerType = "TimerType"
         private val NOTIFICATION_ID = 800
         private val REMOVE_NOTIFICATION_ID = 1007
     }

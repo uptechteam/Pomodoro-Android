@@ -28,7 +28,6 @@ class MainPresenterImpl @Inject constructor(val context: Context,
     }
 
     override fun unbind() {
-//        mainView?.showMessage("onDestroy()")
         this.mainView = null
     }
 
@@ -103,6 +102,7 @@ class MainPresenterImpl @Inject constructor(val context: Context,
     private fun startTimerService(pomodoro: PomodoroType?) {
         val serviceIntent = Intent(context, TimerService::class.java)
         serviceIntent.putExtra(TimerService.timerTime, pomodoro?.time)
+        serviceIntent.putExtra(TimerService.timerType, pomodoro?.name)
         context.startService(serviceIntent)
     }
 
