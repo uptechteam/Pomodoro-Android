@@ -16,6 +16,7 @@ fastlane_version "2.11.0"
 default_platform :android
 
 platform :android do
+<<<<<<< HEAD
 
   desc "Runs all the tests"
   lane :test do
@@ -36,6 +37,31 @@ platform :android do
     gradle(task: "assembleRelease")
     supply
   end
+=======
+  desc "Runs all the tests"
+  lane :test do
+    # TODO find a way to run tests
+    # gradle(task: "connectedAndroidTest")
+    gradle(task: "clean")
+  end
+
+  #desc "Submit a new Beta Build to Crashlytics Beta"
+  #lane :beta do
+  #  gradle(task: "assemblePomodoroRelease")
+  #  crashlytics(
+  #        api_token: "013155ba3de2508e862ee784e2d646bcb76eb7d5",
+  #        build_secret: "840b47e08fcd996e1449f0fa7797c084595b82d31241cd90e35ba651ba61344b",
+  #        groups: 'qa-team',
+  #        notifications: true          
+  #   )
+  #end
+
+  #desc "Deploy a new version to the Google Play"
+  #lane :deploy do
+  #  gradle(task: "assembleRelease")
+  #  supply
+  #end
+>>>>>>> b31a9560bbba64ddd84645272e594e37d59ecacb
 
   # You can define as many lanes as you want
 
@@ -54,6 +80,7 @@ platform :android do
     # )
   end
 end
+<<<<<<< HEAD
 
 
 # More information about multiple platforms in fastlane: https://github.com/fastlane/fastlane/blob/master/fastlane/docs/Platforms.md
@@ -61,3 +88,5 @@ end
 
 # fastlane reports which actions are used. No personal data is recorded. 
 # Learn more at https://github.com/fastlane/fastlane#metrics
+=======
+>>>>>>> b31a9560bbba64ddd84645272e594e37d59ecacb

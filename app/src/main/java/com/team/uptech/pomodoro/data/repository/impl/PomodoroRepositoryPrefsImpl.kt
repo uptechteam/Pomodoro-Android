@@ -9,7 +9,6 @@ import com.team.uptech.pomodoro.data.repository.PomodoroRepository
 import io.reactivex.Completable
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 /**
@@ -32,7 +31,7 @@ class PomodoroRepositoryPrefsImpl @Inject constructor(context: Context) : Pomodo
                         Log.e("PomodoroRepositoryPrefs", "", it)
                     })
         }.subscribeOn(Schedulers.io())
-                .delay(1.toLong(), TimeUnit.SECONDS) //Just for testing =)
+//                .delay(1.toLong(), TimeUnit.SECONDS) //Just for testing =)
     }
 
     private fun getPomodoroType() = prefs.getString(CURRENT_TYPE, TYPE_NOT_WORKING)
