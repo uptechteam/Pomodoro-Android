@@ -35,7 +35,7 @@ open class AppModule(private val context: Context) {
 
     @Provides
     @Singleton
-    fun provideTimerUseCase(pomodoroRepository: PomodoroRepository): TimerUseCase = TimerUseCaseImpl(context, pomodoroRepository)
+    fun provideTimerUseCase(pomodoroRepository: PomodoroRepository): TimerUseCase = TimerUseCaseImpl(pomodoroRepository)
 
     @Provides
     @Singleton

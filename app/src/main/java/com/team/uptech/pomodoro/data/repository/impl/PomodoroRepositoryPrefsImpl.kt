@@ -46,12 +46,10 @@ class PomodoroRepositoryPrefsImpl @Inject constructor(context: Context) : Pomodo
 
     override fun getPomodoroTypeTime(pomodoro: PomodoroType): Single<Int> {
         return Single.create<Int> {
-            if (pomodoro.name == TYPE_WORK) {
-                it.onSuccess(prefs.getInt(pomodoro.name, DEFAULT_WORK_TIME))
-            } else if (pomodoro.name == TYPE_BREAK) {
-                it.onSuccess(prefs.getInt(pomodoro.name, DEFAULT_BREAK_TIME))
-            } else {
-                it.onSuccess(prefs.getInt(pomodoro.name, 0))
+            when (pomodoro) {
+                PomodoroType.WORK -> it.onSuccess(prefs.getInt(pomodoro.name, DEFAULT_WORK_TIME))
+                PomodoroType.BREAK -> it.onSuccess(prefs.getInt(pomodoro.name, DEFAULT_BREAK_TIME))
+                PomodoroType.NOT_WORKING -> it.onSuccess(prefs.getInt(pomodoro.name, 0))
             }
         }.subscribeOn(Schedulers.io())
     }
