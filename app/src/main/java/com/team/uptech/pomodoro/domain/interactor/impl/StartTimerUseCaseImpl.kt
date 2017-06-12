@@ -1,7 +1,7 @@
 package com.team.uptech.pomodoro.domain.interactor.impl
 
 import android.util.Log
-import com.team.uptech.pomodoro.data.model.PomodoroType
+import com.team.uptech.pomodoro.data.model.Pomodoro
 import com.team.uptech.pomodoro.data.repository.PomodoroRepository
 import com.team.uptech.pomodoro.domain.interactor.StartTimerUseCase
 import io.reactivex.Maybe
@@ -15,8 +15,8 @@ import javax.inject.Inject
  */
 class StartTimerUseCaseImpl @Inject constructor(val pomodoroRepository: PomodoroRepository) : StartTimerUseCase {
 
-    override fun getCurrentPomodoro(): Single<PomodoroType> {
-        return Single.create<PomodoroType> { sb ->
+    override fun getCurrentPomodoro(): Single<Pomodoro> {
+        return Single.create<Pomodoro> { sb ->
             pomodoroRepository.getCurrentPomodoro()
                     .subscribe({
                         sb.onSuccess(it)
@@ -26,16 +26,19 @@ class StartTimerUseCaseImpl @Inject constructor(val pomodoroRepository: Pomodoro
         }.subscribeOn(Schedulers.io())
     }
 
-    override fun startNew(): Maybe<PomodoroType> {
-        return Maybe.create<PomodoroType> { sb ->
+    /**
+     * onSuccess -> isInfiniteMode() enabled
+     */
+    override fun startNew(): Maybe<Pomodoro> {
+        return Maybe.create<Pomodoro> { sb ->
             pomodoroRepository.getCurrentPomodoro()
                     .subscribe({
                         var currentPomodoro = it
                         currentPomodoro =
-                                if (currentPomodoro == PomodoroType.WORK)
-                                    PomodoroType.BREAK
+                                if (currentPomodoro == Pomodoro.WORK)
+                                    Pomodoro.BREAK
                                 else
-                                    PomodoroType.WORK
+                                    Pomodoro.WORK
                         pomodoroRepository.getIsInfiniteMode()
                                 .subscribe({
                                     if (it) {
@@ -53,16 +56,16 @@ class StartTimerUseCaseImpl @Inject constructor(val pomodoroRepository: Pomodoro
         }.subscribeOn(Schedulers.io())
     }
 
-    override fun changeStartStop(): Single<PomodoroType> {
-        return Single.create<PomodoroType> { sb ->
+    override fun changePomodoroType(): Single<Pomodoro> {
+        return Single.create<Pomodoro> { sb ->
             pomodoroRepository.getCurrentPomodoro()
                     .subscribe({
                         var currentPomodoro = it
                         currentPomodoro =
-                                if (currentPomodoro == PomodoroType.WORK)
-                                    PomodoroType.BREAK
+                                if (currentPomodoro == Pomodoro.WORK)
+                                    Pomodoro.BREAK
                                 else
-                                    PomodoroType.WORK
+                                    Pomodoro.WORK
                         sb.onSuccess(currentPomodoro)
                         pomodoroRepository.saveCurrentPomodoro(currentPomodoro).subscribe()
                     }, {

@@ -1,6 +1,6 @@
 package com.team.uptech.pomodoro.domain.interactor.impl
 
-import com.team.uptech.pomodoro.data.model.PomodoroType
+import com.team.uptech.pomodoro.data.model.Pomodoro
 import com.team.uptech.pomodoro.data.repository.PomodoroRepository
 import com.team.uptech.pomodoro.domain.interactor.ChangeSettingsUseCase
 import io.reactivex.Single
@@ -21,7 +21,7 @@ class ChangeSettingsUseCaseImpl @Inject constructor(val pomodoroRepository: Pomo
         }
     }
 
-    override fun getPomodoroTypeTime(type: PomodoroType): Single<Int> {
+    override fun getPomodoroTypeTime(type: Pomodoro): Single<Int> {
         return Single.create<Int> { sb ->
             pomodoroRepository.getPomodoroTypeTime(type).subscribe({
                 sb.onSuccess(it)
@@ -33,5 +33,5 @@ class ChangeSettingsUseCaseImpl @Inject constructor(val pomodoroRepository: Pomo
 
     override fun changeInfinity(isInfinite: Boolean) = pomodoroRepository.saveIsInfiniteMode(isInfinite)
 
-    override fun changeTypeTime(type: PomodoroType, time: Int) = pomodoroRepository.savePomodoroTypeTime(type, time)
+    override fun changeTypeTime(type: Pomodoro, time: Int) = pomodoroRepository.savePomodoroTypeTime(type, time)
 }

@@ -6,7 +6,7 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import com.team.uptech.pomodoro.R
-import com.team.uptech.pomodoro.data.model.PomodoroType
+import com.team.uptech.pomodoro.data.model.Pomodoro
 import com.team.uptech.pomodoro.presentation.presenter.MainPresenter
 import com.team.uptech.pomodoro.presentation.ui.ProgressListener
 import com.team.uptech.pomodoro.presentation.ui.view.MainView
@@ -38,7 +38,7 @@ class MainActivity : BaseActivity(), MainView, ProgressListener {
             }
         }
         presenter.bind(this)
-        presenter.getCurrentPomodoro()
+        presenter.showCurrentState()
     }
 
     override fun showProgress() {
@@ -74,16 +74,16 @@ class MainActivity : BaseActivity(), MainView, ProgressListener {
         hideTimer()
     }
 
-    override fun showCurrentState(pomodoro: PomodoroType) {
-        if (pomodoro != PomodoroType.NOT_WORKING) {
+    override fun showCurrentState(pomodoro: Pomodoro) {
+        if (pomodoro != Pomodoro.NOT_WORKING) {
             textView.text = pomodoro.name
             button_start_stop.textResource =
-                    if (pomodoro == PomodoroType.WORK || pomodoro == PomodoroType.BREAK) R.string.stop_timer
+                    if (pomodoro == Pomodoro.WORK || pomodoro == Pomodoro.BREAK) R.string.stop_timer
                     else R.string.start_timer
         }
     }
 
-    override fun showTimer(pomodoro: PomodoroType) {
+    override fun showTimer(pomodoro: Pomodoro) {
         textView.text = pomodoro.name
         button_start_stop.textResource = R.string.stop_timer
     }

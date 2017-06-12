@@ -2,7 +2,7 @@ package com.team.uptech.pomodoro.presentation.presenter.impl
 
 import android.util.Log
 import com.team.uptech.pomodoro.dagger.scope.PerActivity
-import com.team.uptech.pomodoro.data.model.PomodoroType
+import com.team.uptech.pomodoro.data.model.Pomodoro
 import com.team.uptech.pomodoro.domain.interactor.ChangeSettingsUseCase
 import com.team.uptech.pomodoro.presentation.presenter.SettingsPresenter
 import com.team.uptech.pomodoro.presentation.ui.view.SettingsView
@@ -17,15 +17,15 @@ class SettingsPresenterImpl @Inject constructor(val changeSettingsUseCase: Chang
 
     private var settingsView: SettingsView? = null
 
-    override fun getPomodoroTime(pomodoroType: PomodoroType) {
-        changeSettingsUseCase.getPomodoroTypeTime(PomodoroType.valueOf(pomodoroType.toString()))
+    override fun getPomodoroTime(pomodoro: Pomodoro) {
+        changeSettingsUseCase.getPomodoroTypeTime(Pomodoro.valueOf(pomodoro.toString()))
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe { settingsView?.showProgress() }
                 .doAfterTerminate { settingsView?.hideProgress() }
                 .subscribe({
-                    if (pomodoroType == PomodoroType.WORK)
+                    if (pomodoro == Pomodoro.WORK)
                         settingsView?.showWorkTime(it)
-                    else if (pomodoroType == PomodoroType.BREAK) {
+                    else if (pomodoro == Pomodoro.BREAK) {
                         settingsView?.showRelaxTime(it)
                     }
                 }, {
@@ -40,11 +40,11 @@ class SettingsPresenterImpl @Inject constructor(val changeSettingsUseCase: Chang
     }
 
     override fun onWorkTimeChanged(time: Int) {
-        changeSettingsUseCase.changeTypeTime(PomodoroType.WORK, time).subscribe()
+        changeSettingsUseCase.changeTypeTime(Pomodoro.WORK, time).subscribe()
     }
 
     override fun onRelaxTimeChanged(time: Int) {
-        changeSettingsUseCase.changeTypeTime(PomodoroType.BREAK, time).subscribe()
+        changeSettingsUseCase.changeTypeTime(Pomodoro.BREAK, time).subscribe()
     }
 
     override fun onInfinityChanged(isInfinite: Boolean) {

@@ -9,7 +9,7 @@ import android.view.View
 import android.widget.Toast
 import com.team.uptech.pomodoro.R
 import com.team.uptech.pomodoro.dagger.ActivityComponent
-import com.team.uptech.pomodoro.data.model.PomodoroType
+import com.team.uptech.pomodoro.data.model.Pomodoro
 import com.team.uptech.pomodoro.presentation.presenter.SettingsPresenter
 import com.team.uptech.pomodoro.presentation.ui.activity.BaseActivity
 import com.team.uptech.pomodoro.presentation.ui.view.SettingsView
@@ -39,8 +39,8 @@ class SettingsFragment : PreferenceFragment(), SettingsView {
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         presenter.bind(this)
-        presenter.getPomodoroTime(PomodoroType.WORK)
-        presenter.getPomodoroTime(PomodoroType.BREAK)
+        presenter.getPomodoroTime(Pomodoro.WORK)
+        presenter.getPomodoroTime(Pomodoro.BREAK)
         presenter.getIsInfinite()
     }
 

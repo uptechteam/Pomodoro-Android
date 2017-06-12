@@ -4,7 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.util.Log
 import com.team.uptech.pomodoro.dagger.scope.PerActivity
-import com.team.uptech.pomodoro.data.model.PomodoroType
+import com.team.uptech.pomodoro.data.model.Pomodoro
 import com.team.uptech.pomodoro.domain.interactor.StartTimerUseCase
 import com.team.uptech.pomodoro.domain.interactor.TimerUseCase
 import com.team.uptech.pomodoro.presentation.presenter.MainPresenter
@@ -32,12 +32,12 @@ class MainPresenterImpl @Inject constructor(val context: Context,
     }
 
     override fun onStartClicked() {
-        startTimerUseCase.changeStartStop()
+        startTimerUseCase.changePomodoroType()
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe { mainView?.showProgress() }
                 .doAfterTerminate { mainView?.hideProgress() }
                 .doAfterSuccess {
-                    timerUseCase.getTimerSubject()
+                    timerUseCase.getCurrentProgress()
                             ?.subscribe({ sb ->
                                 if (it != null) {
                                     Log.d("LOOOL", "MainActivity sb = " + sb)
@@ -47,7 +47,7 @@ class MainPresenterImpl @Inject constructor(val context: Context,
                                 Log.d("MainActivity", "", error)
                             }, {
                                 timerUseCase.timerFinished()
-                                Log.d("LOOOL", "MainActivity getTimerSubject onComplete")
+                                Log.d("LOOOL", "MainActivity getCurrentProgress onComplete")
                             })
                 }
                 .subscribe({
@@ -59,7 +59,7 @@ class MainPresenterImpl @Inject constructor(val context: Context,
     }
 
     override fun onStopClicked() {
-        startTimerUseCase.changeStartStop()
+        startTimerUseCase.changePomodoroType()
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe { mainView?.showProgress() }
                 .doAfterTerminate { mainView?.hideProgress() }
@@ -77,7 +77,7 @@ class MainPresenterImpl @Inject constructor(val context: Context,
                 .doOnSubscribe { mainView?.showProgress() }
                 .doAfterTerminate { mainView?.hideProgress() }
                 .doAfterSuccess {
-                    timerUseCase.getTimerSubject()
+                    timerUseCase.getCurrentProgress()
                             ?.subscribe({ sb ->
                                 Log.d("LOOOL", "MainActivity sb = " + sb)
                                 mainView?.updateTimerProgress(sb, it.time)
@@ -85,7 +85,7 @@ class MainPresenterImpl @Inject constructor(val context: Context,
                                 Log.d("MainActivity", "", error)
                             }, {
                                 timerUseCase.timerFinished()
-                                Log.d("LOOOL", "MainActivity getTimerSubject onComplete")
+                                Log.d("LOOOL", "MainActivity getCurrentProgress onComplete")
                             })
                 }
                 .subscribe({
@@ -99,7 +99,7 @@ class MainPresenterImpl @Inject constructor(val context: Context,
                 })
     }
 
-    private fun startTimerService(pomodoro: PomodoroType?) {
+    private fun startTimerService(pomodoro: Pomodoro?) {
         val serviceIntent = Intent(context, TimerService::class.java)
         serviceIntent.putExtra(TimerService.timerTime, pomodoro?.time)
         serviceIntent.putExtra(TimerService.timerType, pomodoro?.name)
@@ -110,7 +110,7 @@ class MainPresenterImpl @Inject constructor(val context: Context,
         context.stopService(Intent(context, TimerService::class.java))
     }
 
-    override fun getCurrentPomodoro() {
+    override fun showCurrentState() {
         startTimerUseCase.getCurrentPomodoro()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({

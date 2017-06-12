@@ -9,5 +9,5 @@ interface MainPresenter: BasePresenter<MainView>{
     fun onStartClicked()
     fun onStopClicked()
     fun onTimerFinished()
-    fun getCurrentPomodoro()
+    fun showCurrentState()
 }

@@ -1,7 +1,7 @@
 package com.team.uptech.pomodoro.domain.interactor.impl
 
 import android.util.Log
-import com.team.uptech.pomodoro.data.model.PomodoroType
+import com.team.uptech.pomodoro.data.model.Pomodoro
 import com.team.uptech.pomodoro.data.repository.PomodoroRepository
 import com.team.uptech.pomodoro.domain.interactor.TimerUseCase
 import io.reactivex.Observable
@@ -40,10 +40,10 @@ class TimerUseCaseImpl(val pomodoroRepository: PomodoroRepository) : TimerUseCas
 
     override fun stopTimer() {
         tickDisposable?.dispose()
-        pomodoroRepository.saveCurrentPomodoro(PomodoroType.NOT_WORKING).subscribe()
+        pomodoroRepository.saveCurrentPomodoro(Pomodoro.NOT_WORKING).subscribe()
     }
 
-    override fun getTimerSubject() = subject
+    override fun getCurrentProgress() = subject
 
     override fun timerFinished() {
         subject = PublishSubject.create()

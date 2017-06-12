@@ -8,6 +8,6 @@ import io.reactivex.subjects.PublishSubject
 interface TimerUseCase {
     fun startTimer(timerTime: Int)
     fun stopTimer()
-    fun getTimerSubject(): PublishSubject<Int>?
+    fun getCurrentProgress(): PublishSubject<Int>?
     fun timerFinished()
 }

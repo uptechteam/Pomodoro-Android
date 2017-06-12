@@ -21,7 +21,7 @@ class TimerPresenterImpl @Inject constructor(val timerUseCase: TimerUseCase) : T
 
     override fun onStartTimerClicked(timerTime: Int) {
         timerUseCase.startTimer(timerTime)
-        tickDisposable = timerUseCase.getTimerSubject()
+        tickDisposable = timerUseCase.getCurrentProgress()
                 ?.subscribe({ sb ->
                     Log.d("LOOOL", "sb = " + sb)
                     progressListener?.updateTimerProgress(sb, timerTime)
