@@ -8,7 +8,6 @@ import android.widget.Toast
 import com.team.uptech.pomodoro.R
 import com.team.uptech.pomodoro.data.model.Pomodoro
 import com.team.uptech.pomodoro.presentation.presenter.MainPresenter
-import com.team.uptech.pomodoro.presentation.ui.ProgressListener
 import com.team.uptech.pomodoro.presentation.ui.view.MainView
 import kotlinx.android.synthetic.main.activity_main.*
 import org.jetbrains.anko.startActivity
@@ -19,7 +18,7 @@ import javax.inject.Inject
 /**
  * Created on 26.04.17.
  */
-class MainActivity : BaseActivity(), MainView, ProgressListener {
+class MainActivity : BaseActivity(), MainView {
 
     @Inject lateinit var presenter: MainPresenter
 
@@ -68,10 +67,6 @@ class MainActivity : BaseActivity(), MainView, ProgressListener {
             it.maxProgress = maxValue.toFloat()
             it.progress = value.toFloat()
         }
-    }
-
-    override fun timerFinished() {
-        hideTimer()
     }
 
     override fun showCurrentState(pomodoro: Pomodoro) {

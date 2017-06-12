@@ -40,14 +40,12 @@ class MainPresenterImpl @Inject constructor(val context: Context,
                     timerUseCase.getCurrentProgress()
                             ?.subscribe({ sb ->
                                 if (it != null) {
-                                    Log.d("LOOOL", "MainActivity sb = " + sb)
                                     mainView?.updateTimerProgress(sb, it.time)
                                 }
                             }, { error ->
-                                Log.d("MainActivity", "", error)
+                                Log.d("MainPresenterImpl", "", error)
                             }, {
                                 timerUseCase.timerFinished()
-                                Log.d("LOOOL", "MainActivity getCurrentProgress onComplete")
                             })
                 }
                 .subscribe({
@@ -79,13 +77,11 @@ class MainPresenterImpl @Inject constructor(val context: Context,
                 .doAfterSuccess {
                     timerUseCase.getCurrentProgress()
                             ?.subscribe({ sb ->
-                                Log.d("LOOOL", "MainActivity sb = " + sb)
                                 mainView?.updateTimerProgress(sb, it.time)
                             }, { error ->
-                                Log.d("MainActivity", "", error)
+                                Log.d("MainPresenterImpl", "", error)
                             }, {
                                 timerUseCase.timerFinished()
-                                Log.d("LOOOL", "MainActivity getCurrentProgress onComplete")
                             })
                 }
                 .subscribe({
@@ -95,7 +91,16 @@ class MainPresenterImpl @Inject constructor(val context: Context,
                     mainView?.showError(error.toString())
                 }, {
                     mainView?.hideTimer()
-//                    stopTimerService()
+                })
+    }
+
+    override fun showCurrentState() {
+        startTimerUseCase.getCurrentPomodoro()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({
+                    mainView?.showCurrentState(it)
+                }, { error ->
+                    mainView?.showError(error.toString())
                 })
     }
 
@@ -108,15 +113,5 @@ class MainPresenterImpl @Inject constructor(val context: Context,
 
     private fun stopTimerService() {
         context.stopService(Intent(context, TimerService::class.java))
-    }
-
-    override fun showCurrentState() {
-        startTimerUseCase.getCurrentPomodoro()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({
-                    mainView?.showCurrentState(it)
-                }, { error ->
-                    mainView?.showError(error.toString())
-                })
     }
 }
