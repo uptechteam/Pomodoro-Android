@@ -55,10 +55,6 @@ class MainActivity : BaseActivity(), MainView {
         super.onDestroy()
     }
 
-    override fun onResume() {
-        super.onResume()
-    }
-
     override fun updateTimerProgress(value: Int, maxValue: Int) {
         timer_with_progress.let {
             if (it.visibility == View.GONE) {
@@ -70,12 +66,14 @@ class MainActivity : BaseActivity(), MainView {
     }
 
     override fun showCurrentState(pomodoro: Pomodoro) {
-        if (pomodoro != Pomodoro.NOT_WORKING) {
+        if (pomodoro == Pomodoro.NOT_WORKING){
+            textView.textResource = R.string.not_work
+        } else {
             textView.text = pomodoro.name
-            button_start_stop.textResource =
-                    if (pomodoro == Pomodoro.WORK || pomodoro == Pomodoro.BREAK) R.string.stop_timer
-                    else R.string.start_timer
         }
+        button_start_stop.textResource =
+                if (pomodoro == Pomodoro.WORK || pomodoro == Pomodoro.BREAK) R.string.stop_timer
+                else R.string.start_timer
     }
 
     override fun showTimer(pomodoro: Pomodoro) {
