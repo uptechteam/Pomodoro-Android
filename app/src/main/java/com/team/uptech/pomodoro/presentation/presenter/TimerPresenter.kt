@@ -1,6 +1,6 @@
 package com.team.uptech.pomodoro.presentation.presenter
 
-import com.team.uptech.pomodoro.presentation.ui.ProgressListener
+import io.reactivex.subjects.PublishSubject
 
 /**
  * Created on 01.06.17.
@@ -8,6 +8,5 @@ import com.team.uptech.pomodoro.presentation.ui.ProgressListener
 interface TimerPresenter {
     fun onStartTimerClicked(timerTime: Int)
     fun onStopTimerClicked()
-    fun onTimerFinished()
-    fun setProgressListener(listener: ProgressListener?)
+    fun getCurrentProgress(): PublishSubject<Int>?
 }

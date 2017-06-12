@@ -30,11 +30,9 @@ class TimerUseCaseImpl(val pomodoroRepository: PomodoroRepository) : TimerUseCas
                     subject?.onNext(response)
                 }, { error ->
                     subject?.onError(error)
-                    Log.e("TimerService", "", error)
-                    Log.d("LOOL", "error = " + error.toString())
+                    Log.e("TimerUseCaseImpl", "", error)
                 }, {
                     subject?.onComplete()
-                    Log.e("LOOL", "TimerSubject onComplete()")
                 })
     }
 
