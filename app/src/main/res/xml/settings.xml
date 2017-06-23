@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory android:title="Preference category">
+
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="infinite_timer"
+            android:title="Enable infinite timer" />
+        <EditTextPreference
+            android:dialogMessage="asd"
+            android:inputType="number"
+            android:key="work_time"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:title="Working time" />
+
+        <EditTextPreference
+            android:dialogMessage="dsa"
+            android:inputType="number"
+            android:key="relax_time"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:title="Relax time" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="Preference category">
+
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="check_box_preference_1"
+            android:title="Check box preference" />
+    </PreferenceCategory>
+    <RingtonePreference
+        android:defaultValue=""
+        android:key="ringtone_preference_1"
+        android:title="Ringtone preference" />
+</PreferenceScreen>

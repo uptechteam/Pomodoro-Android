@@ -1,3 +1,6 @@
+#!groovy​
+
+
 pipeline {
     agent { 
         docker {
@@ -18,15 +21,22 @@ pipeline {
 
         stage("Test") {
             steps {
-                //echo 'Hello World'
                 sh "fastlane test"
+            }
+        }
+
+        stage("QA Deploy") {
+//            when { branch "develop"}
+
+            steps {
+                sh "fastlane beta"
             }
         }
     }
 
     post {
         success {
-//            archiveArtifacts artifacts: "app/build/outputs/apk/*.apk", fingerprint: true
+            archiveArtifacts artifacts: "app/build/outputs/apk/*.apk", fingerprint: true
             echo "Build succeeded."
         }
 

@@ -6,23 +6,21 @@ import android.support.multidex.MultiDex
 import com.crashlytics.android.Crashlytics
 import com.crashlytics.android.core.CrashlyticsCore
 import com.facebook.stetho.Stetho
+import com.team.uptech.pomodoro.dagger.AppComponent
+import com.team.uptech.pomodoro.dagger.AppModule
+import com.team.uptech.pomodoro.dagger.DaggerAppComponent
 import io.fabric.sdk.android.Fabric
 
 
 /**
  * Created on 26.04.17.
  */
-class PomodoroApplication: Application() {
-    companion object {
-        //platformStatic allow access it from java code
-        @JvmStatic lateinit var component: AppComponent
-    }
+class App : Application() {
+    lateinit var appComponent: AppComponent
 
     override fun onCreate() {
         super.onCreate()
-        component = DaggerAppComponent.builder().appModule(AppModule(this)).build()
-        component.inject(this)
-
+        appComponent = DaggerAppComponent.builder().appModule(AppModule(applicationContext)).build()
 
         Stetho.initializeWithDefaults(this)
 

@@ -1,8 +1,9 @@
-package com.team.uptech.pomodoro
+package com.team.uptech.pomodoro.presentation.ui.activity
 
 import android.os.Bundle
 import android.os.Handler
 import android.support.v7.app.AppCompatActivity
+import com.team.uptech.pomodoro.R
 import org.jetbrains.anko.startActivity
 import java.util.concurrent.TimeUnit
 
