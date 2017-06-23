@@ -11,5 +11,5 @@ interface ChangeSettingsUseCase {
     fun getPomodoroTypeTime(type: Pomodoro): Single<Int>
     fun getIsInfinite(): Single<Boolean>
     fun changeTypeTime(type: Pomodoro, time: Int): Completable
-    fun changeInfinity(isInfinite: Boolean): Completable
+    fun changeIsRunningInfinite(isInfinite: Boolean): Completable
 }

@@ -47,8 +47,8 @@ class TimerService : Service() {
 
     private fun startTimer(timerTime: Int) {
         timerPresenter.onStartTimerClicked(timerTime)
-        timerPresenter.getCurrentProgress()
-                ?.subscribe({
+        timerPresenter.getCurrentProgress()?.
+                subscribe({
                     notificationBuilder.setProgress(timerTime, it, false)
                     startForeground(NOTIFICATION_ID, notificationBuilder.build())
                 }, {

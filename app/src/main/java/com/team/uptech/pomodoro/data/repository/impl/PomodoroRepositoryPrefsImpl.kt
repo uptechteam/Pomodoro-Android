@@ -32,7 +32,7 @@ class PomodoroRepositoryPrefsImpl @Inject constructor(context: Context) : Pomodo
                         Log.e("PomodoroRepositoryPrefs", "", it)
                     })
         }.subscribeOn(Schedulers.io())
-                .delay(1.toLong(), TimeUnit.SECONDS) //Just for testing =)
+                .delay(1L, TimeUnit.SECONDS) //Just for testing =)
     }
 
     private fun getPomodoroType() = prefs.getString(CURRENT_TYPE, TYPE_NOT_WORKING)
@@ -46,21 +46,13 @@ class PomodoroRepositoryPrefsImpl @Inject constructor(context: Context) : Pomodo
 
     override fun getPomodoroTypeTime(pomodoro: Pomodoro): Single<Int> {
         return Single.create<Int> {
-            when (pomodoro) {
-                Pomodoro.WORK -> it.onSuccess(prefs.getInt(pomodoro.name, DEFAULT_WORK_TIME))
-                Pomodoro.BREAK -> it.onSuccess(prefs.getInt(pomodoro.name, DEFAULT_BREAK_TIME))
-                Pomodoro.NOT_WORKING -> it.onSuccess(prefs.getInt(pomodoro.name, 0))
-            }
+            it.onSuccess(prefs.getInt(pomodoro.name, pomodoro.time))
         }.subscribeOn(Schedulers.io())
     }
 
     override fun saveCurrentPomodoro(pomodoro: Pomodoro?): Completable {
         return Completable.create {
-            if (pomodoro != null) {
-                prefs.edit().putString(CURRENT_TYPE, pomodoro.name).apply()
-            } else {
-                prefs.edit().putString(CURRENT_TYPE, "").apply()
-            }
+            prefs.edit().putString(CURRENT_TYPE, pomodoro?.name ?: "").apply()
             it.onComplete()
         }.subscribeOn(Schedulers.io())
     }
@@ -85,7 +77,5 @@ class PomodoroRepositoryPrefsImpl @Inject constructor(context: Context) : Pomodo
         private val TYPE_WORK = "WORK"
         private val TYPE_BREAK = "BREAK"
         private val TYPE_NOT_WORKING = "NOT_WORKING"
-        private val DEFAULT_WORK_TIME = 10 //seconds (for testing)
-        private val DEFAULT_BREAK_TIME = 5
     }
 }

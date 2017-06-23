@@ -48,7 +48,7 @@ class SettingsPresenterImpl @Inject constructor(val changeSettingsUseCase: Chang
     }
 
     override fun onInfinityChanged(isInfinite: Boolean) {
-        changeSettingsUseCase.changeInfinity(isInfinite).subscribe()
+        changeSettingsUseCase.changeIsRunningInfinite(isInfinite).subscribe()
     }
 
     override fun bind(view: SettingsView) {

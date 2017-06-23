@@ -38,7 +38,9 @@ class TimerUseCaseImpl(val pomodoroRepository: PomodoroRepository) : TimerUseCas
 
     override fun stopTimer() {
         tickDisposable?.dispose()
-        pomodoroRepository.saveCurrentPomodoro(Pomodoro.NOT_WORKING).subscribe()
+        pomodoroRepository.saveCurrentPomodoro(Pomodoro.NOT_WORKING)
+                .subscribe({ Log.d("TimerUseCaseImpl", "Timer stopped -> Pomodoro.NOT_WORKING saved") },
+                        { Log.e("TimerUseCaseImpl", "", it) })
     }
 
     override fun getCurrentProgress() = subject

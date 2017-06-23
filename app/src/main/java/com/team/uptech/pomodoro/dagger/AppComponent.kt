@@ -1,6 +1,5 @@
 package com.team.uptech.pomodoro.dagger
 
-import com.team.uptech.pomodoro.domain.interactor.TimerUseCase
 import dagger.Component
 import javax.inject.Singleton
 

@@ -31,7 +31,7 @@ class ChangeSettingsUseCaseImpl @Inject constructor(val pomodoroRepository: Pomo
         }
     }
 
-    override fun changeInfinity(isInfinite: Boolean) = pomodoroRepository.saveIsInfiniteMode(isInfinite)
+    override fun changeIsRunningInfinite(isInfinite: Boolean) = pomodoroRepository.saveIsInfiniteMode(isInfinite)
 
     override fun changeTypeTime(type: Pomodoro, time: Int) = pomodoroRepository.savePomodoroTypeTime(type, time)
 }
