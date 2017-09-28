@@ -1,4 +1,4 @@
-package com.team.uptech.pomodoro
+package com.team.uptech.pomodoro.dagger
 
 import dagger.Component
 import javax.inject.Singleton
@@ -9,7 +9,5 @@ import javax.inject.Singleton
 @Singleton
 @Component(modules = arrayOf(AppModule::class))
 interface AppComponent {
-    fun inject(application: PomodoroApplication)
-    fun inject(baseActivity: BaseActivity)
-    fun inject(mainActivity: MainActivity)
+    fun activityComponent(): ActivityComponent
 }

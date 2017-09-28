@@ -12,7 +12,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'io.fabric.tools:gradle:1.22.1'
+        classpath 'io.fabric.tools:gradle:1.+'
     }
 }
 
@@ -23,15 +23,23 @@ repositories {
 
 android {
     compileSdkVersion 25
-    buildToolsVersion "25.0.1"
+    buildToolsVersion "25.0.2"
     defaultConfig {
         applicationId "com.team.uptech.pomodoro"
-        minSdkVersion 16
+        minSdkVersion 21
         targetSdkVersion 25
         versionCode 1
         versionName "1.0"
         multiDexEnabled true
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+    signingConfigs {
+        release {
+            keyAlias "pomodoro"
+            keyPassword "qwertyuptech"
+            storeFile file('../pomodoro_keystore.jks')
+            storePassword "qwertyuptech"
+        }
     }
     buildTypes {
         debug {
@@ -39,6 +47,7 @@ android {
         }
 
         release {
+            signingConfig signingConfigs.release
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
@@ -59,7 +68,7 @@ dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
 
-    compile('com.crashlytics.sdk.android:crashlytics:2.5.7@aar') {
+    compile('com.crashlytics.sdk.android:crashlytics:2.6.8@aar') {
         transitive = true;
     }
 
@@ -80,8 +89,10 @@ dependencies {
     compile 'io.reactivex.rxjava2:rxjava:2.0.9'
     compile 'com.android.support:multidex:1.0.1'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
-    compile 'com.google.dagger:dagger:2.5'
     testCompile 'junit:junit:4.12'
-    kapt 'com.google.dagger:dagger-compiler:2.5'
+    compile 'com.google.dagger:dagger:2.8'
+    kapt 'com.google.dagger:dagger-compiler:2.8'
     provided 'org.glassfish:javax.annotation:10.0-b28'
+
+    compile 'com.github.rahatarmanahmed:circularprogressview:2.5.0'
 }

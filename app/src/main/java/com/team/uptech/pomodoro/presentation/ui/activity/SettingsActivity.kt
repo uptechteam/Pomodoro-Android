@@ -1,10 +1,14 @@
-package com.team.uptech.pomodoro
+package com.team.uptech.pomodoro.presentation.ui.activity
 
 import android.os.Bundle
-import android.preference.PreferenceFragment
 import android.view.MenuItem
+import com.team.uptech.pomodoro.R
+import com.team.uptech.pomodoro.presentation.ui.fragment.SettingsFragment
 import kotlinx.android.synthetic.main.activity_settings.*
 
+/**
+ * Created on 26.04.17.
+ */
 class SettingsActivity : BaseActivity() {
 
     override fun getContentView() = R.layout.activity_settings
@@ -23,12 +27,5 @@ class SettingsActivity : BaseActivity() {
             finish()
         }
         return super.onOptionsItemSelected(item)
-    }
-
-    class SettingsFragment : PreferenceFragment() {
-        override fun onCreate(savedInstanceState: Bundle?) {
-            super.onCreate(savedInstanceState)
-            addPreferencesFromResource(R.xml.settings)
-        }
     }
 }
